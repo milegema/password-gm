@@ -1,5 +1,7 @@
 package com.bitwormhole.passwordgm.contexts;
 
+import com.bitwormhole.passwordgm.security.SecretFileIO;
+
 import java.nio.file.Path;
 import java.security.KeyPair;
 
@@ -10,6 +12,7 @@ public class ContextBase {
     private final ContextBase parent;
     private final ContextScope scope;
     private Path folder;
+    private SecretFileIO fileIO;
     private String name;
     private String label;
     private String description;
@@ -60,6 +63,14 @@ public class ContextBase {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public SecretFileIO getFileIO() {
+        return fileIO;
+    }
+
+    public void setFileIO(SecretFileIO fileIO) {
+        this.fileIO = fileIO;
     }
 
     public KeyPair getKeyPair() {

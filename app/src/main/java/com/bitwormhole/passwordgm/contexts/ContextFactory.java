@@ -9,6 +9,9 @@ public class ContextFactory {
         RootContext parent = ch.getRoot();
         AppContext child = new AppContext(parent);
         child.setName(".password-gm");
+        child.setComponents(null);
+        child.setKeyPairManager(null);
+        child.setSecretKeyManager(null);
         return child;
     }
 

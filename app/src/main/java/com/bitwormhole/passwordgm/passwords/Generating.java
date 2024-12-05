@@ -14,7 +14,27 @@ public class Generating {
     private long createdAt;
     private long updatedAt;
 
+    private char[] password; // 生成的结果
+
+
+    public final Features required; // 需要支持的特性
+    public final Features used; // 采用了的特性
+    public final Features supported; // 可以支持的特性
+
+
     public Generating() {
+        this.required = new Features();
+        this.supported = new Features();
+        this.used = new Features();
+    }
+
+
+    public char[] getPassword() {
+        return password;
+    }
+
+    public void setPassword(char[] password) {
+        this.password = password;
     }
 
     public int getRevision() {

@@ -4,6 +4,11 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
+import com.bitwormhole.passwordgm.boot.Bootstrap;
+import com.bitwormhole.passwordgm.tasks.Promise;
+import com.bitwormhole.passwordgm.tasks.Result;
+import com.bitwormhole.passwordgm.utils.Errors;
+
 public class MainActivity extends PgmActivity {
 
     @Override
@@ -15,6 +20,18 @@ public class MainActivity extends PgmActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Bootstrap.boot(this);
+        Promise.init(this, Long.class).Try(() -> {
+
+            Bootstrap.boot(this);
+
+            return new Result<>(Long.getLong("000"));
+        }).Then((res) -> {
+
+            return res;
+        }).Catch((res) -> {
+            int flags = Errors.LOG | Errors.ALERT;
+            Errors.handle(this, res.getError(), flags);
+            return res;
+        }).start();
     }
 }
