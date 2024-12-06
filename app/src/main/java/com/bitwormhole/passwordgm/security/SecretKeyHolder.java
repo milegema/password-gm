@@ -10,6 +10,6 @@ public interface SecretKeyHolder {
 
     boolean exists();
 
-    SecretKey get();
+    SecretKey fetch();
 
 }

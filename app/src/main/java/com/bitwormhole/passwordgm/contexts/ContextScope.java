@@ -6,4 +6,6 @@ public enum ContextScope {
     DOMAIN,
     ACCOUNT,
     ROOT,
+
+    TEST,
 }

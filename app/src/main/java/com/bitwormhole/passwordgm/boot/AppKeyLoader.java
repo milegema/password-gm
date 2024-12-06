@@ -32,10 +32,8 @@ public class AppKeyLoader {
             kph.create();
         }
 
-        KeyPair pair = kph.get();
+        KeyPair pair = kph.fetch();
         app.setKeyPair(pair);
         app.setSecretKey(null);
-
     }
-
 }

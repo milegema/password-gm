@@ -10,6 +10,8 @@ public interface KeyPairHolder {
 
     boolean exists();
 
-    KeyPair get();
+    KeyPair fetch();
+
+    String alias();
 
 }

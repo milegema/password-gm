@@ -9,7 +9,11 @@ public class PEMBlock {
     }
 
     public byte[] getData() {
-        return data;
+        byte[] res = this.data;
+        if (res == null) {
+            res = new byte[0];
+        }
+        return res;
     }
 
     public void setData(byte[] data) {
@@ -17,7 +21,11 @@ public class PEMBlock {
     }
 
     public String getType() {
-        return type;
+        String res = this.type;
+        if (res == null) {
+            res = "no type";
+        }
+        return res.toUpperCase();
     }
 
     public void setType(String type) {
