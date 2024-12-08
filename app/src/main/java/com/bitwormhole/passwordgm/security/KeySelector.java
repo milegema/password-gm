@@ -12,7 +12,7 @@ public class KeySelector {
     }
 
 
-    public static String computeAliasOf(KeySelector sel) {
+    public static String computeAlias(KeySelector sel) {
         if (sel == null) {
             return "null";
         }

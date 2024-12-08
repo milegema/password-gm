@@ -13,7 +13,8 @@ public class ContextBase {
     private final ContextScope scope;
     private Path folder;
     private SecretFileIO fileIO;
-    private String name;
+    private String name; // app|user|domain|account|version
+    private String alias; // file-name|dir-name|key-name
     private String label;
     private String description;
     private SecretKey secretKey;
@@ -55,6 +56,14 @@ public class ContextBase {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public String getLabel() {

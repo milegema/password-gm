@@ -114,8 +114,7 @@ public class KeyPairManagerImpl implements KeyPairManager {
         }
     }
 
-
     private static String getAliasOf(KeySelector sel) {
-        return KeySelector.computeAliasOf(sel);
+        return KeySelector.computeAlias(sel);
     }
 }
