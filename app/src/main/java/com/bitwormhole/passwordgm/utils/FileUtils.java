@@ -20,17 +20,17 @@ public final class FileUtils {
     }
 
 
-    public static void writeBinary(byte[] data, Path file, int flags) throws IOException {
+    public static void writeBinary(byte[] data, Path file, FileOptions flags) throws IOException {
         impl.writeBinary(data, file, flags);
     }
 
 
-    public static void writeBinary(byte[] data, int offset, int length, Path file, int flags) throws IOException {
+    public static void writeBinary(byte[] data, int offset, int length, Path file, FileOptions flags) throws IOException {
         impl.writeBinary(data, offset, length, file, flags);
     }
 
 
-    public static void writeText(String text, Path file, int flags) throws IOException {
+    public static void writeText(String text, Path file, FileOptions flags) throws IOException {
         impl.writeText(text, file, flags);
     }
 }

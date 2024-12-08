@@ -9,10 +9,10 @@ public interface FileIO {
 
     String readText(Path file) throws IOException;
 
-    void writeBinary(byte[] data, Path file, int flags) throws IOException;
+    void writeBinary(byte[] data, Path file, FileOptions flags) throws IOException;
 
-    void writeBinary(byte[] data, int offset, int length, Path file, int flags) throws IOException;
+    void writeBinary(byte[] data, int offset, int length, Path file, FileOptions flags) throws IOException;
 
-    void writeText(String text, Path file, int flags) throws IOException;
+    void writeText(String text, Path file, FileOptions flags) throws IOException;
 
 }

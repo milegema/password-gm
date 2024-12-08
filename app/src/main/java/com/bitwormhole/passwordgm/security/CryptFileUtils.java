@@ -2,10 +2,12 @@ package com.bitwormhole.passwordgm.security;
 
 import com.bitwormhole.passwordgm.security.pem.PEMBlock;
 import com.bitwormhole.passwordgm.security.pem.PEMDocument;
+import com.bitwormhole.passwordgm.utils.Logs;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 public class CryptFileUtils {
@@ -67,6 +69,12 @@ public class CryptFileUtils {
         if (data == null) {
             return dst;
         }
+
+        String debugText = new String(data, StandardCharsets.UTF_8);
+        //  in.reset();
+        Logs.debug(debugText);
+
+
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         dst.load(in);
         return dst;

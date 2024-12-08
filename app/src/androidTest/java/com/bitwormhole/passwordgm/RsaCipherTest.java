@@ -58,7 +58,7 @@ public class RsaCipherTest {
         Encryption en1 = new Encryption();
         en1.setPlain(data1);
         en1.setAlgorithm(algorithm);
-        en1.setMode(CipherMode.ECB);
+        en1.setMode(CipherMode.NONE);
         en1.setPadding(PaddingMode.PKCS1Padding);
         // en1.setProvider(provider2);
 

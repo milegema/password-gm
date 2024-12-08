@@ -17,6 +17,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
+import java.util.Date;
 
 public class KeyPairManagerImpl implements KeyPairManager {
 
@@ -44,16 +45,24 @@ public class KeyPairManagerImpl implements KeyPairManager {
 
         @Override
         public boolean create() {
+            long now = System.currentTimeMillis();
+            Date t1 = new Date(now - 1000);
+            Date t2 = new Date(now + (1000L * 99L * 365 * 24 * 3600));
+            int purposes = KeyProperties.PURPOSE_SIGN | KeyProperties.PURPOSE_VERIFY | KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT;
+            int keySize = 1024 * 4;
             try {
-                KeyPairGenerator kpg = KeyPairGenerator.getInstance(
-                        KeyProperties.KEY_ALGORITHM_RSA, "AndroidKeyStore");
-                kpg.initialize(new KeyGenParameterSpec.Builder(
-                        mAlias,
-                        KeyProperties.PURPOSE_SIGN | KeyProperties.PURPOSE_VERIFY | KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
-                        .setDigests(KeyProperties.DIGEST_SHA256,
-                                KeyProperties.DIGEST_SHA512)
+                KeyPairGenerator kpg = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, "AndroidKeyStore");
+                kpg.initialize(new KeyGenParameterSpec.Builder(mAlias, purposes)
+                        .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
+                        .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1, KeyProperties.ENCRYPTION_PADDING_RSA_OAEP)
+                        .setCertificateNotBefore(t1).setCertificateNotAfter(t2)
+                        .setBlockModes(KeyProperties.BLOCK_MODE_ECB, KeyProperties.BLOCK_MODE_CBC, KeyProperties.BLOCK_MODE_CTR)
+                        .setKeySize(keySize)
                         .build());
-                this.mKeyPair = kpg.generateKeyPair();
+                KeyPair kp = kpg.generateKeyPair();
+                if (kp == null) {
+                    throw new RuntimeException("result of generateKeyPair() is null");
+                }
                 return true;
             } catch (NoSuchProviderException | NoSuchAlgorithmException |
                      InvalidAlgorithmParameterException e) {
@@ -64,9 +73,8 @@ public class KeyPairManagerImpl implements KeyPairManager {
         @Override
         public boolean delete() {
             try {
-                KeyStore ks = KeyStore.getInstance("AndroidKeyStore");
-                ks.load(null);
-                ks.deleteEntry(mAlias);
+                KeyStore store = getKeyStore();
+                store.deleteEntry(mAlias);
                 return true;
             } catch (CertificateException | KeyStoreException | NoSuchAlgorithmException |
                      IOException e) {
@@ -79,9 +87,8 @@ public class KeyPairManagerImpl implements KeyPairManager {
         @Override
         public boolean exists() {
             try {
-                KeyStore ks = KeyStore.getInstance("AndroidKeyStore");
-                ks.load(null);
-                return ks.containsAlias(mAlias);
+                KeyStore store = getKeyStore();
+                return store.containsAlias(mAlias);
             } catch (CertificateException | KeyStoreException | NoSuchAlgorithmException |
                      IOException e) {
                 //  throw new RuntimeException(e);
@@ -97,21 +104,25 @@ public class KeyPairManagerImpl implements KeyPairManager {
                 return kp;
             }
             try {
-                KeyStore ks = KeyStore.getInstance("AndroidKeyStore");
-                ks.load(null);
-                KeyStore.Entry entry = ks.getEntry(mAlias, null);
-                KeyStore.PrivateKeyEntry pkEntry = (KeyStore.PrivateKeyEntry) entry;
-                PrivateKey pri = pkEntry.getPrivateKey();
-                PublicKey pub = pkEntry.getCertificate().getPublicKey();
+                KeyStore store = getKeyStore();
+                KeyStore.PrivateKeyEntry entry = (KeyStore.PrivateKeyEntry) store.getEntry(mAlias, null);
+                PrivateKey pri = entry.getPrivateKey();
+                PublicKey pub = entry.getCertificate().getPublicKey();
                 kp = new KeyPair(pub, pri);
                 this.mKeyPair = kp;
                 return kp;
-            } catch (CertificateException | KeyStoreException |
-                     NoSuchAlgorithmException | UnrecoverableEntryException |
-                     IOException e) {
+            } catch (CertificateException | KeyStoreException | NoSuchAlgorithmException |
+                     UnrecoverableEntryException | IOException e) {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+
+    private static KeyStore getKeyStore() throws CertificateException, IOException, NoSuchAlgorithmException, KeyStoreException {
+        KeyStore store = KeyStore.getInstance("AndroidKeyStore");
+        store.load(null);
+        return store;
     }
 
     private static String getAliasOf(KeySelector sel) {

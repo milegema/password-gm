@@ -1,10 +1,14 @@
 package com.bitwormhole.passwordgm.security;
 
+import com.bitwormhole.passwordgm.utils.Logs;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
 
+import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
 public class SecretKeyManagerImpl implements SecretKeyManager {
@@ -15,22 +19,96 @@ public class SecretKeyManagerImpl implements SecretKeyManager {
     public SecretKeyManagerImpl() {
     }
 
+    private static class MySecretKeyBuilder {
+
+        public int size;
+        public String algorithm;
+
+        public SecretKey generate() throws NoSuchAlgorithmException {
+            KeyGenerator kg = KeyGenerator.getInstance(this.algorithm);
+            kg.init(this.size);
+            return kg.generateKey();
+        }
+    }
 
     private static class MySecretKeyHolder implements SecretKeyHolder {
 
-        private final KeyPair pair;
         private final String alias;
         private final Path file;
+        private final KeyPairHolder kph;
+        private KeyPair pair;
+        private SecretKey cached;
 
-        public MySecretKeyHolder(KeyPairHolder kph, Path f) {
-            this.pair = kph.fetch();
+        public MySecretKeyHolder(KeyPairHolder h, Path f) {
+            this.kph = h;
             this.alias = kph.alias();
             this.file = f;
         }
 
+
+        private KeyPair fetchKeyPair(boolean create) {
+            KeyPair kp = this.pair;
+            if (kp == null) {
+                if (!kph.exists()) {
+                    if (create) {
+                        kph.create();
+                    }
+                }
+                kp = kph.fetch();
+                this.pair = kp;
+            }
+            return kp;
+        }
+
+        @Override
+        public String alias() {
+            return this.alias;
+        }
+
         @Override
         public boolean create() {
-            return false;
+
+            if (this.exists()) {
+                return false;
+            }
+
+            // make key-pair
+            KeyPair kp = this.fetchKeyPair(true);
+
+
+            // make secret-key
+            MySecretKeyBuilder skBuilder = new MySecretKeyBuilder();
+            skBuilder.size = 256;
+            skBuilder.algorithm = "AES";
+            SecretKey sk;
+            try {
+                sk = skBuilder.generate();
+            } catch (NoSuchAlgorithmException e) {
+                throw new RuntimeException(e);
+            }
+
+            // make file-head
+            SecretKeyFile.Head head = new SecretKeyFile.Head();
+            head.outerAlgorithm = kp.getPublic().getAlgorithm();
+            head.outerPadding = PaddingMode.PKCS1Padding;
+            head.outerMode = CipherMode.NONE;
+            head.innerAlgorithm = sk.getAlgorithm();
+            head.innerContentType = "binary/aes-secret-key";
+
+            // store
+            SecretKeyFile skf = new SecretKeyFile();
+            skf.setAlias(this.alias);
+            skf.setFile(this.file);
+            skf.setKeypair(kp);
+            skf.setCrypt(null);
+            skf.setSecretkey(sk);
+            skf.setHead(head);
+            try {
+                SecretKeyFileLS.store(skf);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            return true;
         }
 
         @Override
@@ -39,7 +117,9 @@ public class SecretKeyManagerImpl implements SecretKeyManager {
                 Files.delete(this.file);
                 return true;
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                // throw new RuntimeException(e);
+                Logs.error("error:" + this, e);
+                return false;
             }
         }
 
@@ -50,7 +130,23 @@ public class SecretKeyManagerImpl implements SecretKeyManager {
 
         @Override
         public SecretKey fetch() {
-            return null;
+            SecretKey sk = this.cached;
+            if (sk != null) {
+                return sk;
+            }
+            KeyPair kp = this.fetchKeyPair(false);
+            SecretKeyFile skFile = new SecretKeyFile();
+            skFile.setKeypair(kp);
+            skFile.setAlias(this.alias);
+            skFile.setFile(this.file);
+            try {
+                skFile = SecretKeyFileLS.load(skFile);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            sk = skFile.getSecretkey();
+            this.cached = sk;
+            return sk;
         }
     }
 

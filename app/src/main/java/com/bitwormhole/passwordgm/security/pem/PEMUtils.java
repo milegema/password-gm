@@ -1,10 +1,10 @@
 package com.bitwormhole.passwordgm.security.pem;
 
+import com.bitwormhole.passwordgm.utils.FileOptions;
 import com.bitwormhole.passwordgm.utils.FileUtils;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Base64;
 
 public final class PEMUtils {
 
@@ -16,10 +16,9 @@ public final class PEMUtils {
         return decode(text);
     }
 
-    public static void write(PEMDocument doc, Path dst) throws IOException {
-        int flags = 0;
+    public static void write(PEMDocument doc, Path dst, FileOptions opt) throws IOException {
         String text = encode(doc);
-        FileUtils.writeText(text, dst, flags);
+        FileUtils.writeText(text, dst, opt);
     }
 
     public static String encode(PEMDocument doc) {

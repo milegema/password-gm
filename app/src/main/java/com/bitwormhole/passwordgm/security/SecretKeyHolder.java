@@ -4,6 +4,8 @@ import javax.crypto.SecretKey;
 
 public interface SecretKeyHolder {
 
+    String alias();
+
     boolean create();
 
     boolean delete();
