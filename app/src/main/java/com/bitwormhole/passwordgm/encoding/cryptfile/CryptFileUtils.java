@@ -1,7 +1,7 @@
-package com.bitwormhole.passwordgm.security;
+package com.bitwormhole.passwordgm.encoding.cryptfile;
 
-import com.bitwormhole.passwordgm.security.pem.PEMBlock;
-import com.bitwormhole.passwordgm.security.pem.PEMDocument;
+import com.bitwormhole.passwordgm.encoding.pem.PEMBlock;
+import com.bitwormhole.passwordgm.encoding.pem.PEMDocument;
 import com.bitwormhole.passwordgm.utils.Logs;
 
 import java.io.ByteArrayInputStream;

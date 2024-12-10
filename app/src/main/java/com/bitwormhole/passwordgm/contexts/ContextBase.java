@@ -1,6 +1,6 @@
 package com.bitwormhole.passwordgm.contexts;
 
-import com.bitwormhole.passwordgm.security.CryptFileIO;
+import com.bitwormhole.passwordgm.encoding.cryptfile.CryptFileIO;
 
 import java.nio.file.Path;
 import java.security.KeyPair;

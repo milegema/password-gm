@@ -1,4 +1,4 @@
-package com.bitwormhole.passwordgm.security.pem;
+package com.bitwormhole.passwordgm.encoding.pem;
 
 public class PEMBlock {
 

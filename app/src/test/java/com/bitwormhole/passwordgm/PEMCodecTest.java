@@ -1,9 +1,9 @@
 package com.bitwormhole.passwordgm;
 
-import com.bitwormhole.passwordgm.security.pem.PEMBlock;
-import com.bitwormhole.passwordgm.security.pem.PEMDecoder;
-import com.bitwormhole.passwordgm.security.pem.PEMDocument;
-import com.bitwormhole.passwordgm.security.pem.PEMEncoder;
+import com.bitwormhole.passwordgm.encoding.pem.PEMBlock;
+import com.bitwormhole.passwordgm.encoding.pem.PEMDecoder;
+import com.bitwormhole.passwordgm.encoding.pem.PEMDocument;
+import com.bitwormhole.passwordgm.encoding.pem.PEMEncoder;
 
 import org.junit.Assert;
 import org.junit.Test;

@@ -1,4 +1,4 @@
-package com.bitwormhole.passwordgm.security;
+package com.bitwormhole.passwordgm.encoding.cryptfile;
 
 import com.bitwormhole.passwordgm.utils.FileIO;
 

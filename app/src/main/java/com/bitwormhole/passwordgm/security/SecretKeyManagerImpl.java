@@ -1,5 +1,7 @@
 package com.bitwormhole.passwordgm.security;
 
+import com.bitwormhole.passwordgm.encoding.secretkeyfile.SecretKeyFile;
+import com.bitwormhole.passwordgm.encoding.secretkeyfile.SecretKeyFileLS;
 import com.bitwormhole.passwordgm.utils.Logs;
 
 import java.io.IOException;
