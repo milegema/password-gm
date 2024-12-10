@@ -2,6 +2,7 @@ package com.bitwormhole.passwordgm.encoding.secretkeyfile;
 
 import com.bitwormhole.passwordgm.encoding.pem.PEMDocument;
 import com.bitwormhole.passwordgm.encoding.pem.PEMUtils;
+import com.bitwormhole.passwordgm.encoding.ptable.PropertyTable;
 import com.bitwormhole.passwordgm.security.CipherUtils;
 import com.bitwormhole.passwordgm.encoding.cryptfile.CryptFile;
 import com.bitwormhole.passwordgm.encoding.cryptfile.CryptFileUtils;
@@ -14,7 +15,6 @@ import java.nio.file.Path;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.util.Properties;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -47,7 +47,7 @@ public final class SecretKeyFileLS {
         KeyPair key_pair;
         SecretKey secret_key;
         SecretKeyFile.Head head;
-        Properties properties;
+        PropertyTable properties;
         String text;
         Path file;
 
@@ -113,7 +113,7 @@ public final class SecretKeyFileLS {
         KeyPair key_pair;
         SecretKey secret_key;
         SecretKeyFile.Head head;
-        Properties properties;
+        PropertyTable properties;
         String text;
         Path file;
 

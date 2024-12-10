@@ -2,6 +2,7 @@ package com.bitwormhole.passwordgm.utils;
 
 import android.util.NoSuchPropertyException;
 
+import com.bitwormhole.passwordgm.encoding.ptable.PropertyTable;
 import com.bitwormhole.passwordgm.security.CipherMode;
 import com.bitwormhole.passwordgm.security.PaddingMode;
 
@@ -9,17 +10,17 @@ import java.util.Properties;
 
 public class PropertyGetter {
 
-    private Properties properties;
+    private PropertyTable properties;
     private boolean required;
 
     public PropertyGetter() {
-        this.properties = new Properties();
+        this.properties = PropertyTable.Factory.create();
         this.required = true;
     }
 
-    public PropertyGetter(Properties src) {
+    public PropertyGetter(PropertyTable src) {
         if (src == null) {
-            src = new Properties();
+            src = PropertyTable.Factory.create();
         }
         this.properties = src;
         this.required = true;
@@ -34,11 +35,11 @@ public class PropertyGetter {
         this.required = required;
     }
 
-    public Properties getProperties() {
+    public PropertyTable getProperties() {
         return properties;
     }
 
-    public void setProperties(Properties p) {
+    public void setProperties(PropertyTable p) {
         if (p == null) {
             return;
         }
@@ -46,7 +47,7 @@ public class PropertyGetter {
     }
 
     private String innerGet(String name) {
-        String str = this.properties.getProperty(name);
+        String str = this.properties.get(name);
         if (str == null) {
             if (this.required) {
                 throw new NoSuchPropertyException("no property named: " + name);

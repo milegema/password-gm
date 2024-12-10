@@ -1,5 +1,6 @@
 package com.bitwormhole.passwordgm.encoding.secretkeyfile;
 
+import com.bitwormhole.passwordgm.encoding.ptable.PropertyTable;
 import com.bitwormhole.passwordgm.security.CipherMode;
 import com.bitwormhole.passwordgm.encoding.cryptfile.CryptFile;
 import com.bitwormhole.passwordgm.security.PaddingMode;
@@ -8,7 +9,6 @@ import com.bitwormhole.passwordgm.utils.PropertySetter;
 
 import java.nio.file.Path;
 import java.security.KeyPair;
-import java.util.Properties;
 
 import javax.crypto.SecretKey;
 
@@ -58,7 +58,7 @@ public class SecretKeyFile {
     }
 
 
-    public static Head props2head(Properties src) {
+    public static Head props2head(PropertyTable src) {
         Head dst = new Head();
         if (src == null) {
             return dst;
@@ -76,8 +76,8 @@ public class SecretKeyFile {
         return dst;
     }
 
-    public static Properties head2props(Head src) {
-        Properties dst = new Properties();
+    public static PropertyTable head2props(Head src) {
+        PropertyTable dst = PropertyTable.Factory.create();
         PropertySetter setter = new PropertySetter(dst);
 
         setter.put(Head.INNER_ALGORITHM, src.innerAlgorithm);

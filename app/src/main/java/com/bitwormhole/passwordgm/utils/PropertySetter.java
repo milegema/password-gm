@@ -1,5 +1,6 @@
 package com.bitwormhole.passwordgm.utils;
 
+import com.bitwormhole.passwordgm.encoding.ptable.PropertyTable;
 import com.bitwormhole.passwordgm.security.CipherMode;
 import com.bitwormhole.passwordgm.security.PaddingMode;
 
@@ -7,13 +8,13 @@ import java.util.Properties;
 
 public class PropertySetter {
 
-    private final Properties properties;
+    private final PropertyTable properties;
 
     public PropertySetter() {
-        this.properties = new Properties();
+        this.properties = PropertyTable.Factory.create();
     }
 
-    public PropertySetter(Properties _target) {
+    public PropertySetter(PropertyTable _target) {
         this.properties = _target;
     }
 
@@ -21,7 +22,7 @@ public class PropertySetter {
         if (name == null || value == null) {
             return;
         }
-        this.properties.setProperty(name, value);
+        this.properties.put(name, value);
     }
 
     public void put(String name, String value) {
