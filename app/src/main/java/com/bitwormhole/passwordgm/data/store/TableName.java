@@ -2,11 +2,11 @@ package com.bitwormhole.passwordgm.data.store;
 
 public enum TableName {
 
-    TABLE1,
-    TABLE2,
+    test1,
+    test2,
 
-    USERS,
-    DOMAINS,
-    ACCOUNTS,
+    users,
+    domains,
+    accounts,
 
 }

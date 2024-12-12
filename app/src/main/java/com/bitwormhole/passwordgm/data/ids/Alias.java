@@ -1,5 +1,7 @@
 package com.bitwormhole.passwordgm.data.ids;
 
+import androidx.annotation.NonNull;
+
 public class Alias {
 
     private final static String undefined = "undefined";
@@ -7,16 +9,38 @@ public class Alias {
     private final String value;
 
     public Alias(String v) {
+        this.value = normalizeValue(v);
+    }
+
+    public Alias(Alias al) {
+        this.value = normalizeValue(al);
+    }
+
+    private static String normalizeValue(String v) {
         if (v == null) {
-            v = undefined;
+            return undefined;
         }
         if (v.isEmpty()) {
-            v = undefined;
+            return undefined;
         }
-        this.value = v;
+        return v.toLowerCase();
+    }
+
+    private static String normalizeValue(Alias alias) {
+        if (alias == null) {
+            return undefined;
+        }
+        return normalizeValue(alias.value);
     }
 
     public String getValue() {
-        return value;
+        return this.value;
+    }
+
+
+    @NonNull
+    @Override
+    public String toString() {
+        return this.value;
     }
 }

@@ -7,45 +7,57 @@ import com.bitwormhole.passwordgm.encoding.ptable.PropertyTableLS;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CryptFileUtils {
 
-    private static final String SECRET_FILE = "CRYPT FILE";
+    private static final String CRYPT_BLOCK = "CRYPT BLOCK";
 
     private CryptFileUtils() {
     }
 
-    public static CryptFile convert(PEMDocument src) throws IOException {
-        CryptFile dst = null;
-        PEMBlock[] blocks = src.getBlocks();
-        if (blocks != null) {
-            for (PEMBlock block : blocks) {
-                if (SECRET_FILE.equalsIgnoreCase(block.getType())) {
-                    dst = parseBlock(block);
+    public static CryptFile convert(PEMDocument src_doc) throws IOException {
+        CryptFile dst_file = new CryptFile();
+        List<CryptBlock> dst = new ArrayList<>();
+        PEMBlock[] src = src_doc.getBlocks();
+        if (src != null) {
+            for (PEMBlock block1 : src) {
+                CryptBlock block2 = parseBlock(block1);
+                if (block2 == null) {
+                    continue;
                 }
+                dst.add(block2);
             }
         }
-        if (dst == null) {
-            dst = new CryptFile();
-        }
-        return dst;
+        dst_file.setBlocks(dst.toArray(new CryptBlock[0]));
+        return dst_file;
     }
 
-    public static PEMDocument convert(CryptFile src) throws IOException {
-        PEMDocument dst = new PEMDocument();
-        PEMBlock block = makeBlock(src);
-        dst.add(block);
-        return dst;
+    public static PEMDocument convert(CryptFile src_file) throws IOException {
+        PEMDocument dst_doc = new PEMDocument();
+        List<PEMBlock> dst = new ArrayList<>();
+        CryptBlock[] src = src_file.getBlocks();
+        if (src != null) {
+            for (CryptBlock block1 : src) {
+                PEMBlock block2 = makeBlock(block1);
+                if (block2 == null) {
+                    continue;
+                }
+                dst.add(block2);
+            }
+        }
+        dst_doc.setBlocks(dst.toArray(new PEMBlock[0]));
+        return dst_doc;
     }
 
     /////////// private
 
-    private static PEMBlock makeBlock(CryptFile src) throws IOException {
+    private static PEMBlock makeBlock(CryptBlock src) throws IOException {
         PEMBlock dst = new PEMBlock();
-        dst.setType(SECRET_FILE);
+        dst.setType(CRYPT_BLOCK);
         if (src == null) {
-            dst.setData(new byte[0]);
-            return dst;
+            return null;
         }
         PropertyTable head = src.getHead();
         byte[] body = src.getBody();
@@ -62,18 +74,18 @@ public class CryptFileUtils {
         return dst;
     }
 
-    private static CryptFile parseBlock(PEMBlock src) throws IOException {
-        CryptFile dst = new CryptFile();
+    private static CryptBlock parseBlock(PEMBlock src) throws IOException {
         if (src == null) {
-            return dst;
+            return null;
         }
-        if (!SECRET_FILE.equalsIgnoreCase(src.getType())) {
-            return dst;
+        if (!CRYPT_BLOCK.equalsIgnoreCase(src.getType())) {
+            return null;
         }
         byte[] data = src.getData();
         if (data == null) {
-            return dst;
+            return null;
         }
+        final CryptBlock dst = new CryptBlock();
         final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         final int total = data.length;
         int offset, length;

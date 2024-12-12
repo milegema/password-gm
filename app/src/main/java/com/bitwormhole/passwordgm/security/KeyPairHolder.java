@@ -1,5 +1,7 @@
 package com.bitwormhole.passwordgm.security;
 
+import com.bitwormhole.passwordgm.data.ids.KeyAlias;
+
 import java.security.KeyPair;
 
 public interface KeyPairHolder {
@@ -12,6 +14,6 @@ public interface KeyPairHolder {
 
     KeyPair fetch();
 
-    String alias();
+    KeyAlias alias();
 
 }

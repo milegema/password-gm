@@ -1,5 +1,7 @@
 package com.bitwormhole.passwordgm.encoding.ptable;
 
+import java.util.Map;
+
 public interface PropertyTable {
 
     // 表示这个值已被删除
@@ -17,5 +19,12 @@ public interface PropertyTable {
 
     void remove(String name);
 
+    void clear();
+
     String[] names();
+
+    Map<String, String> exportAll(Map<String, String> dst);
+
+    void importAll(Map<String, String> src);
+
 }

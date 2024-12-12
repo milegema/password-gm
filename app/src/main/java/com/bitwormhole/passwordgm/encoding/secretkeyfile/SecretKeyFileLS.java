@@ -1,41 +1,67 @@
 package com.bitwormhole.passwordgm.encoding.secretkeyfile;
 
-import com.bitwormhole.passwordgm.encoding.pem.PEMDocument;
-import com.bitwormhole.passwordgm.encoding.pem.PEMUtils;
-import com.bitwormhole.passwordgm.encoding.ptable.PropertyTable;
-import com.bitwormhole.passwordgm.security.CipherUtils;
-import com.bitwormhole.passwordgm.encoding.cryptfile.CryptFile;
-import com.bitwormhole.passwordgm.encoding.cryptfile.CryptFileUtils;
-import com.bitwormhole.passwordgm.security.Encryption;
-import com.bitwormhole.passwordgm.utils.FileOptions;
-import com.bitwormhole.passwordgm.utils.FileUtils;
+import com.bitwormhole.passwordgm.data.access.DataAccessRequest;
+import com.bitwormhole.passwordgm.data.access.DataAccessStack;
+import com.bitwormhole.passwordgm.data.access.DataAccessStackFactory;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.security.KeyPair;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 
 public final class SecretKeyFileLS {
+
+
+    private static DataAccessStack _stack;
 
     private SecretKeyFileLS() {
     }
 
+    private static DataAccessStack getStack() {
+        DataAccessStack st = _stack;
+        if (st == null) {
+            st = initStack();
+            _stack = st;
+        }
+        return st;
+    }
+
+    private static DataAccessStack initStack() {
+        return DataAccessStackFactory.createStack(DataAccessStackFactory.CONFIG.MAIN_KEY_CONTAINER);
+    }
 
     public static SecretKeyFile load(SecretKeyFile src) throws IOException {
+      /*
         SecretKeyFile dst = new SecretKeyFile(src);
         Loader l = new Loader(dst);
         l.load();
         return dst;
+        */
+
+        SecretKeyFile dst = new SecretKeyFile(src);
+        DataAccessStack st = getStack();
+        DataAccessRequest req = new DataAccessRequest();
+        st.getReader().read(req);
+
+        dst.setSecretkey(req.getSecretKey());
+        return dst;
     }
 
-    public static void store(SecretKeyFile skf) throws IOException {
+    public static void store(SecretKeyFile target) throws IOException {
+        /*
         Saver saver = new Saver(skf);
         saver.save();
+        */
+
+        DataAccessRequest req = new DataAccessRequest();
+        req.setFile(target.getFile());
+        req.setKeyPair(target.getKeypair());
+        req.setSecretKey(target.getSecretkey());
+
+
+        DataAccessStack st = getStack();
+        st.getWriter().write(req);
     }
+
+    /*
+
 
     private static class Loader {
         private final SecretKeyFile target;
@@ -175,4 +201,5 @@ public final class SecretKeyFileLS {
             this.writeFile();
         }
     }
+    */
 }

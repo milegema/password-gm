@@ -3,6 +3,7 @@ package com.bitwormhole.passwordgm.security;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 
+import com.bitwormhole.passwordgm.data.ids.KeyAlias;
 import com.bitwormhole.passwordgm.utils.Errors;
 
 import java.io.IOException;
@@ -23,23 +24,22 @@ public class KeyPairManagerImpl implements KeyPairManager {
 
 
     @Override
-    public KeyPairHolder get(KeySelector sel) {
-        String alias = getAliasOf(sel);
+    public KeyPairHolder get(KeyAlias alias) {
         return new MyKeyHolder(alias);
     }
 
 
     private static class MyKeyHolder implements KeyPairHolder {
 
-        private final String mAlias;
+        private final KeyAlias mAlias;
         private KeyPair mKeyPair;
 
-        public MyKeyHolder(String name) {
-            this.mAlias = name;
+        public MyKeyHolder(KeyAlias alias) {
+            this.mAlias = new KeyAlias(alias);
         }
 
         @Override
-        public String alias() {
+        public KeyAlias alias() {
             return this.mAlias;
         }
 
@@ -51,8 +51,9 @@ public class KeyPairManagerImpl implements KeyPairManager {
             int purposes = KeyProperties.PURPOSE_SIGN | KeyProperties.PURPOSE_VERIFY | KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT;
             int keySize = 1024 * 4;
             try {
+                String alias = this.mAlias.getValue();
                 KeyPairGenerator kpg = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, "AndroidKeyStore");
-                kpg.initialize(new KeyGenParameterSpec.Builder(mAlias, purposes)
+                kpg.initialize(new KeyGenParameterSpec.Builder(alias, purposes)
                         .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
                         .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1, KeyProperties.ENCRYPTION_PADDING_RSA_OAEP)
                         .setCertificateNotBefore(t1).setCertificateNotAfter(t2)
@@ -73,8 +74,9 @@ public class KeyPairManagerImpl implements KeyPairManager {
         @Override
         public boolean delete() {
             try {
+                String alias = this.mAlias.getValue();
                 KeyStore store = getKeyStore();
-                store.deleteEntry(mAlias);
+                store.deleteEntry(alias);
                 return true;
             } catch (CertificateException | KeyStoreException | NoSuchAlgorithmException |
                      IOException e) {
@@ -87,8 +89,9 @@ public class KeyPairManagerImpl implements KeyPairManager {
         @Override
         public boolean exists() {
             try {
+                String alias = this.mAlias.getValue();
                 KeyStore store = getKeyStore();
-                return store.containsAlias(mAlias);
+                return store.containsAlias(alias);
             } catch (CertificateException | KeyStoreException | NoSuchAlgorithmException |
                      IOException e) {
                 //  throw new RuntimeException(e);
@@ -104,8 +107,9 @@ public class KeyPairManagerImpl implements KeyPairManager {
                 return kp;
             }
             try {
+                String alias = this.mAlias.getValue();
                 KeyStore store = getKeyStore();
-                KeyStore.PrivateKeyEntry entry = (KeyStore.PrivateKeyEntry) store.getEntry(mAlias, null);
+                KeyStore.PrivateKeyEntry entry = (KeyStore.PrivateKeyEntry) store.getEntry(alias, null);
                 PrivateKey pri = entry.getPrivateKey();
                 PublicKey pub = entry.getCertificate().getPublicKey();
                 kp = new KeyPair(pub, pri);
@@ -118,14 +122,9 @@ public class KeyPairManagerImpl implements KeyPairManager {
         }
     }
 
-
     private static KeyStore getKeyStore() throws CertificateException, IOException, NoSuchAlgorithmException, KeyStoreException {
         KeyStore store = KeyStore.getInstance("AndroidKeyStore");
         store.load(null);
         return store;
-    }
-
-    private static String getAliasOf(KeySelector sel) {
-        return KeySelector.computeAlias(sel);
     }
 }

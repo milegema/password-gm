@@ -71,6 +71,56 @@ public class PropertyGetter {
         return def;
     }
 
+
+    public byte[] getDataHex(String name, byte[] def) {
+        String str = innerGet(name);
+        try {
+            final String prefix = "hex:";
+            if (str.startsWith(prefix)) {
+                str = str.substring(prefix.length()).trim();
+            }
+            return Hex.parse(str);
+        } catch (Exception e) {
+            Errors.handle(null, e);
+        }
+        return def;
+    }
+
+    public byte[] getDataBase64(String name, byte[] def) {
+        String str = innerGet(name);
+        try {
+            final String prefix = "base64:";
+            if (str.startsWith(prefix)) {
+                str = str.substring(prefix.length()).trim();
+            }
+            return Base64.decode(str);
+        } catch (Exception e) {
+            Errors.handle(null, e);
+        }
+        return def;
+    }
+
+    public byte[] getDataAuto(String name, byte[] def) {
+        String str = innerGet(name);
+        if (str == null) {
+            return def;
+        } else if (str.startsWith("base64:")) {
+            return this.getDataBase64(name, def);
+        } else if (str.startsWith("hex:")) {
+            return this.getDataHex(name, def);
+        }
+        if (Hex.isHexString(str)) {
+            return Hex.parse(str);
+        }
+        return Base64.decode(str);
+    }
+
+
+    public byte[] getData(String name, byte[] def) {
+        return getDataAuto(name, def);
+    }
+
+
     public PaddingMode getPaddingMode(String name, PaddingMode def) {
         String str = innerGet(name);
         PaddingMode value = null;

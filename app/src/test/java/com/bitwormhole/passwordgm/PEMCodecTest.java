@@ -11,7 +11,7 @@ import org.junit.Test;
 public class PEMCodecTest {
 
     @Test
-    public void encodeAndDecode() {
+    public void useEncodeAndDecode() {
 
         PEMBlock b1 = new PEMBlock();
         PEMBlock b2 = new PEMBlock();

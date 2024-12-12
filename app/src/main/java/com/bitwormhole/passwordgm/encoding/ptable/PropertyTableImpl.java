@@ -34,11 +34,33 @@ class PropertyTableImpl implements PropertyTable {
     }
 
     @Override
+    public void clear() {
+        table.clear();
+    }
+
+    @Override
     public String[] names() {
         Set<String> src = table.keySet();
         String[] dst = new String[0];
         dst = src.toArray(dst);
         Arrays.sort(dst);
         return dst;
+    }
+
+    @Override
+    public Map<String, String> exportAll(Map<String, String> dst) {
+        if (dst == null) {
+            dst = new HashMap<>();
+        }
+        dst.putAll(this.table);
+        return dst;
+    }
+
+    @Override
+    public void importAll(Map<String, String> src) {
+        if (src == null) {
+            return;
+        }
+        this.table.putAll(src);
     }
 }

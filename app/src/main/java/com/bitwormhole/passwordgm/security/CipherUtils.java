@@ -1,9 +1,14 @@
 package com.bitwormhole.passwordgm.security;
 
+import com.bitwormhole.passwordgm.utils.Logs;
+
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.Arrays;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
@@ -22,8 +27,11 @@ public final class CipherUtils {
             String transformation = getTransformationOf(src);
             Cipher cipher = getCipher(transformation, provider);
             cipher.init(Cipher.ENCRYPT_MODE, pk);
-            cipher.update(src.getPlain());
-            dst.setEncrypted(cipher.doFinal());
+
+            byte[] plain = src.getPlain();
+            byte[] secret = cipher.doFinal(plain);
+
+            dst.setEncrypted(secret);
             return dst;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -37,12 +45,14 @@ public final class CipherUtils {
             String transformation = getTransformationOf(src);
             Encryption dst = new Encryption(src);
             IvParameterSpec iv = getIvOf(src);
-
             Cipher cipher = getCipher(transformation, provider);
-            cipher.init(Cipher.ENCRYPT_MODE, sk, iv);
-            cipher.update(src.getPlain());
+            initCipher(cipher, Cipher.ENCRYPT_MODE, sk, iv);
 
-            dst.setEncrypted(cipher.doFinal());
+            byte[] plain = src.getPlain();
+            byte[] secret = cipher.doFinal(plain);
+
+            dst.setEncrypted(secret);
+            tmpDebugLogIV(iv);
             return dst;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -57,8 +67,11 @@ public final class CipherUtils {
             String transformation = getTransformationOf(src);
             Cipher cipher = getCipher(transformation, provider);
             cipher.init(Cipher.DECRYPT_MODE, pk);
-            cipher.update(src.getEncrypted());
-            dst.setPlain(cipher.doFinal());
+
+            byte[] secret = src.getEncrypted();
+            byte[] plain = cipher.doFinal(secret);
+
+            dst.setPlain(plain);
             return dst;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -73,14 +86,29 @@ public final class CipherUtils {
             IvParameterSpec iv = getIvOf(src);
 
             Cipher cipher = getCipher(transformation, provider);
-            cipher.init(Cipher.DECRYPT_MODE, sk, iv);
-            cipher.update(src.getEncrypted());
+            initCipher(cipher, Cipher.DECRYPT_MODE, sk, iv);
 
-            dst.setPlain(cipher.doFinal());
+            byte[] secret = src.getEncrypted();
+            byte[] plain = cipher.doFinal(secret);
+
+            dst.setPlain(plain);
+            tmpDebugLogIV(iv);
             return dst;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+
+    // private methods ///////////////////
+
+
+    private static void initCipher(Cipher cipher, int op_mode, SecretKey key, IvParameterSpec iv) throws InvalidKeyException, InvalidAlgorithmParameterException {
+        if (iv == null) {
+            cipher.init(op_mode, key);
+            return;
+        }
+        cipher.init(op_mode, key, iv);
     }
 
     private static Cipher getCipher(String transformation, String provider) throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException {
@@ -97,6 +125,9 @@ public final class CipherUtils {
         }
         byte[] iv = src.getIv();
         if (iv == null) {
+            return null;
+        }
+        if (iv.length == 0) {
             return null;
         }
         return new IvParameterSpec(iv);
@@ -122,5 +153,15 @@ public final class CipherUtils {
         String y = mode.name();
         String z = padding.name();
         return x + '/' + y + '/' + z;
+    }
+
+
+    private static void tmpDebugLogIV(IvParameterSpec iv) {
+        if (iv == null) {
+            return;
+        }
+        byte[] bin = iv.getIV();
+        String str = Arrays.toString(bin);
+        Logs.debug("IV = " + str);
     }
 }

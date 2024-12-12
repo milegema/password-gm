@@ -3,6 +3,7 @@ package com.bitwormhole.passwordgm;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.bitwormhole.passwordgm.contexts.ContextScope;
+import com.bitwormhole.passwordgm.data.ids.KeyAlias;
 import com.bitwormhole.passwordgm.security.KeyPairHolder;
 import com.bitwormhole.passwordgm.security.KeyPairManagerImpl;
 import com.bitwormhole.passwordgm.security.KeySelector;
@@ -23,12 +24,9 @@ public class KeyPairManagerTest {
     @Test
     public void useKeyPairManager() {
 
-        KeySelector sel = new KeySelector();
-        sel.scope = ContextScope.TEST;
-        sel.name = "test-1";
-
+        KeyAlias alias = KeySelector.alias(ContextScope.TEST, "test-1");
         KeyPairManagerImpl kpm = new KeyPairManagerImpl();
-        KeyPairHolder h = kpm.get(sel);
+        KeyPairHolder h = kpm.get(alias);
         if (!h.exists()) {
             h.create();
         }
@@ -47,24 +45,21 @@ public class KeyPairManagerTest {
     @Test
     public void useCURD() {
 
-        KeySelector sel = new KeySelector();
-        sel.scope = ContextScope.TEST;
-        sel.name = "test-2";
-
+        KeyAlias alias = KeySelector.alias(ContextScope.TEST, "test-2");
         KeyPairManagerImpl kpm = new KeyPairManagerImpl();
-        KeyPairHolder h1 = kpm.get(sel);
+        KeyPairHolder h1 = kpm.get(alias);
         if (!h1.exists()) {
             h1.create();
         }
 
-        KeyPairHolder h2 = kpm.get(sel);
+        KeyPairHolder h2 = kpm.get(alias);
         String f1 = computeFingerprint(h1);
         String f2 = computeFingerprint(h2);
-        String a1 = h1.alias();
+
 
         Logs.info("public-key-finger1: " + f1);
         Logs.info("public-key-finger2: " + f2);
-        Logs.info("alias: " + a1);
+        Logs.info("alias: " + alias);
     }
 
     private static String computeFingerprint(KeyPairHolder h) {

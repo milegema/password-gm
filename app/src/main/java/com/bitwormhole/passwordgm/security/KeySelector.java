@@ -1,28 +1,30 @@
 package com.bitwormhole.passwordgm.security;
 
 import com.bitwormhole.passwordgm.contexts.ContextScope;
+import com.bitwormhole.passwordgm.data.ids.KeyAlias;
+import com.bitwormhole.passwordgm.data.ids.UserAlias;
 import com.bitwormhole.passwordgm.utils.HashUtils;
 
-public class KeySelector {
+public final class KeySelector {
 
-    public ContextScope scope;
-    public String name;
-
-    public KeySelector() {
+    private KeySelector() {
     }
 
-
-    public static String computeAlias(KeySelector sel) {
-        if (sel == null) {
-            return "null";
+    public static KeyAlias alias(UserAlias user) {
+        String name = null;
+        if (user != null) {
+            name = user.getValue();
         }
-        StringBuilder b = new StringBuilder();
-        b.append(sel.scope).append(":").append(sel.name);
-        String sum = HashUtils.hexSum(b.toString(), HashUtils.SHA1);
-        String id = sum.substring(0, 11);
+        return alias(ContextScope.USER, name);
+    }
 
+    public static KeyAlias alias(ContextScope scope, String name) {
+        StringBuilder b = new StringBuilder();
+        b.append(scope).append(":").append(name);
+        String sum = HashUtils.hexSum(b.toString(), HashUtils.SHA1);
+        String id = sum.substring(0, 15);
         b.setLength(0);
-        b.append(sel.scope).append("-").append(id);
-        return b.toString();
+        b.append(scope).append("_").append(id);
+        return new KeyAlias(b.toString());
     }
 }

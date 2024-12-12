@@ -1,10 +1,12 @@
 package com.bitwormhole.passwordgm.security;
 
+import com.bitwormhole.passwordgm.data.ids.KeyAlias;
+
 import javax.crypto.SecretKey;
 
 public interface SecretKeyHolder {
 
-    String alias();
+    KeyAlias alias();
 
     boolean create();
 

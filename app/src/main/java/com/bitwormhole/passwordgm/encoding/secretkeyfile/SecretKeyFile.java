@@ -1,5 +1,6 @@
 package com.bitwormhole.passwordgm.encoding.secretkeyfile;
 
+import com.bitwormhole.passwordgm.data.ids.KeyAlias;
 import com.bitwormhole.passwordgm.encoding.ptable.PropertyTable;
 import com.bitwormhole.passwordgm.security.CipherMode;
 import com.bitwormhole.passwordgm.encoding.cryptfile.CryptFile;
@@ -16,7 +17,7 @@ public class SecretKeyFile {
 
     private CryptFile crypt;
     private Path file;
-    private String alias;
+    private KeyAlias alias;
     private SecretKey secretkey;
     private KeyPair keypair;
     private Head head;
@@ -115,11 +116,11 @@ public class SecretKeyFile {
         this.secretkey = secretkey;
     }
 
-    public String getAlias() {
+    public KeyAlias getAlias() {
         return alias;
     }
 
-    public void setAlias(String alias) {
+    public void setAlias(KeyAlias alias) {
         this.alias = alias;
     }
 

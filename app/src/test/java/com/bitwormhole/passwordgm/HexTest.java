@@ -9,7 +9,7 @@ import java.util.Arrays;
 public class HexTest {
 
     @Test
-    public void basic() {
+    public void useHex() {
 
         final byte[] data0 = "hello, this is test for Hex utils".getBytes();
         byte[] data = data0;

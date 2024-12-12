@@ -1,7 +1,9 @@
 package com.bitwormhole.passwordgm.security;
 
+import com.bitwormhole.passwordgm.data.ids.KeyAlias;
+
 public interface KeyPairManager {
 
-    KeyPairHolder get(KeySelector sel);
+    KeyPairHolder get(KeyAlias alias);
 
 }

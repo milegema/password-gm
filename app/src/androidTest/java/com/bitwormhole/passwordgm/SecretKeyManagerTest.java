@@ -6,6 +6,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.bitwormhole.passwordgm.contexts.ContextScope;
+import com.bitwormhole.passwordgm.data.ids.KeyAlias;
 import com.bitwormhole.passwordgm.security.KeyPairManager;
 import com.bitwormhole.passwordgm.security.KeyPairManagerImpl;
 import com.bitwormhole.passwordgm.security.KeySelector;
@@ -39,12 +40,9 @@ public class SecretKeyManagerTest {
         skm.setSecretKeysFolder(folder);
 
 
-        KeySelector sel = new KeySelector();
-        sel.scope = ContextScope.TEST;
-        sel.name = this.getClass().getName() + "v3";
-
-        SecretKeyHolder h1 = skm.get(sel);
-        SecretKeyHolder h2 = skm.get(sel);
+        KeyAlias alias = KeySelector.alias(ContextScope.TEST, this + "v3");
+        SecretKeyHolder h1 = skm.get(alias);
+        SecretKeyHolder h2 = skm.get(alias);
 
         // store
         if (!h1.exists()) {

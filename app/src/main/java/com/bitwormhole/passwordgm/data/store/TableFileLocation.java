@@ -1,8 +1,5 @@
 package com.bitwormhole.passwordgm.data.store;
 
-import com.bitwormhole.passwordgm.contexts.ContextScope;
-import com.bitwormhole.passwordgm.data.ids.UserAlias;
-
 import java.nio.file.Path;
 
 public class TableFileLocation {
@@ -10,9 +7,8 @@ public class TableFileLocation {
 
     // params
 
-    private ContextScope scope;
-    private UserAlias user;
-    private TableName table;
+
+    private TableSelector selector;
 
     // results
 
@@ -25,28 +21,12 @@ public class TableFileLocation {
     public TableFileLocation() {
     }
 
-    public ContextScope getScope() {
-        return scope;
+    public TableSelector getSelector() {
+        return selector;
     }
 
-    public void setScope(ContextScope scope) {
-        this.scope = scope;
-    }
-
-    public UserAlias getUser() {
-        return user;
-    }
-
-    public void setUser(UserAlias user) {
-        this.user = user;
-    }
-
-    public TableName getTable() {
-        return table;
-    }
-
-    public void setTable(TableName table) {
-        this.table = table;
+    public void setSelector(TableSelector selector) {
+        this.selector = selector;
     }
 
     public Path getFolder() {

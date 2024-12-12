@@ -3,6 +3,7 @@ package com.bitwormhole.passwordgm.boot;
 import com.bitwormhole.passwordgm.contexts.AppContext;
 import com.bitwormhole.passwordgm.contexts.ContextHolder;
 import com.bitwormhole.passwordgm.contexts.ContextScope;
+import com.bitwormhole.passwordgm.data.ids.KeyAlias;
 import com.bitwormhole.passwordgm.security.KeyPairHolder;
 import com.bitwormhole.passwordgm.security.KeyPairManager;
 import com.bitwormhole.passwordgm.security.KeySelector;
@@ -20,13 +21,9 @@ public class AppKeyLoader {
 
     public void load() {
 
-        KeySelector sel = new KeySelector();
-        sel.scope = ContextScope.APP;
-        sel.name = app.getName();
-
-
+        KeyAlias alias = KeySelector.alias(ContextScope.APP, "root");
         KeyPairManager kpm = app.getKeyPairManager();
-        KeyPairHolder kph = kpm.get(sel);
+        KeyPairHolder kph = kpm.get(alias);
 
         if (!kph.exists()) {
             kph.create();

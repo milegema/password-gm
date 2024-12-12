@@ -56,4 +56,23 @@ public final class Hex {
         }
         return out.toByteArray();
     }
+
+    public static boolean isHexString(String str) {
+        if (str == null) {
+            return false;
+        }
+        char[] array = str.trim().toCharArray();
+        for (char ch : array) {
+            if ('0' <= ch && ch <= '9') {
+                continue;
+            } else if ('a' <= ch && ch <= 'f') {
+                continue;
+            } else if ('A' <= ch && ch <= 'F') {
+                continue;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
 }

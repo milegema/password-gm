@@ -1,5 +1,6 @@
 package com.bitwormhole.passwordgm.security;
 
+import com.bitwormhole.passwordgm.data.ids.KeyAlias;
 import com.bitwormhole.passwordgm.encoding.secretkeyfile.SecretKeyFile;
 import com.bitwormhole.passwordgm.encoding.secretkeyfile.SecretKeyFileLS;
 import com.bitwormhole.passwordgm.utils.Logs;
@@ -35,7 +36,7 @@ public class SecretKeyManagerImpl implements SecretKeyManager {
 
     private static class MySecretKeyHolder implements SecretKeyHolder {
 
-        private final String alias;
+        private final KeyAlias alias;
         private final Path file;
         private final KeyPairHolder kph;
         private KeyPair pair;
@@ -63,7 +64,7 @@ public class SecretKeyManagerImpl implements SecretKeyManager {
         }
 
         @Override
-        public String alias() {
+        public KeyAlias alias() {
             return this.alias;
         }
 
@@ -169,10 +170,9 @@ public class SecretKeyManagerImpl implements SecretKeyManager {
     }
 
     @Override
-    public SecretKeyHolder get(KeySelector sel) {
-        KeyPairHolder kph = this.keyPairManager.get(sel);
-        String alias = kph.alias();
-        Path f = this.secretKeysFolder.resolve(alias);
+    public SecretKeyHolder get(KeyAlias alias) {
+        KeyPairHolder kph = this.keyPairManager.get(alias);
+        Path f = this.secretKeysFolder.resolve(alias.getValue());
         return new MySecretKeyHolder(kph, f);
     }
 }
