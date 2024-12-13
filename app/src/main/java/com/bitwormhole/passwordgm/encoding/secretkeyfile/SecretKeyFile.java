@@ -3,7 +3,7 @@ package com.bitwormhole.passwordgm.encoding.secretkeyfile;
 import com.bitwormhole.passwordgm.data.ids.KeyAlias;
 import com.bitwormhole.passwordgm.encoding.ptable.PropertyTable;
 import com.bitwormhole.passwordgm.security.CipherMode;
-import com.bitwormhole.passwordgm.encoding.cryptfile.CryptFile;
+import com.bitwormhole.passwordgm.encoding.blocks.CryptoFile;
 import com.bitwormhole.passwordgm.security.PaddingMode;
 import com.bitwormhole.passwordgm.utils.PropertyGetter;
 import com.bitwormhole.passwordgm.utils.PropertySetter;
@@ -15,7 +15,7 @@ import javax.crypto.SecretKey;
 
 public class SecretKeyFile {
 
-    private CryptFile crypt;
+    private CryptoFile crypt;
     private Path file;
     private KeyAlias alias;
     private SecretKey secretkey;
@@ -132,11 +132,11 @@ public class SecretKeyFile {
         this.file = file;
     }
 
-    public CryptFile getCrypt() {
+    public CryptoFile getCrypt() {
         return crypt;
     }
 
-    public void setCrypt(CryptFile crypt) {
+    public void setCrypt(CryptoFile crypt) {
         this.crypt = crypt;
     }
 }

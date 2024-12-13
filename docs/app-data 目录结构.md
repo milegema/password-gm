@@ -8,12 +8,14 @@
     {app_data_dir}/keys/{key_alias}
 
 
-## 公共数据
+## 公共数据仓库
 
-    {app_data_dir}/var/lib/{type}/{id|file_name}
+位于:
 
-## 用户数据
+    {app_data_dir}/var/lib/repository/.pgm
 
-路径格式:
+## 用户数据仓库
 
-    {app_data_dir}/home/{user_alias}/{type}/{id|file_name}
+位于:
+
+    {app_data_dir}/home/{user_alias}/repository/.pgm

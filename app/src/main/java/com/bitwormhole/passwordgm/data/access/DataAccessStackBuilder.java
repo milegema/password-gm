@@ -74,6 +74,9 @@ public class DataAccessStackBuilder {
 
 
     public void add(DataAccessLayer l) {
+        if (l == null) {
+            return;
+        }
         layers.add(l);
     }
 }

@@ -5,13 +5,15 @@ import com.bitwormhole.passwordgm.data.access.DataAccessLayer;
 import com.bitwormhole.passwordgm.data.access.DataAccessReaderChain;
 import com.bitwormhole.passwordgm.data.access.DataAccessRequest;
 import com.bitwormhole.passwordgm.data.access.DataAccessWriterChain;
+import com.bitwormhole.passwordgm.encoding.blocks.CryptoBlock;
+import com.bitwormhole.passwordgm.encoding.blocks.PlainBlock;
 import com.bitwormhole.passwordgm.encoding.ptable.PropertyTable;
 import com.bitwormhole.passwordgm.security.CipherMode;
 import com.bitwormhole.passwordgm.security.CipherUtils;
 import com.bitwormhole.passwordgm.security.Encryption;
 import com.bitwormhole.passwordgm.security.PaddingMode;
 import com.bitwormhole.passwordgm.security.SecurityRandom;
-import com.bitwormhole.passwordgm.utils.Logs;
+import com.bitwormhole.passwordgm.utils.ByteSlice;
 import com.bitwormhole.passwordgm.utils.PropertyGetter;
 import com.bitwormhole.passwordgm.utils.PropertySetter;
 
@@ -119,12 +121,13 @@ public class EncryptionLayerKP implements DataAccessLayer {
 
         KeyPair pair = request.getKeyPair();
         MyBlockHead head = new MyBlockHead();
-        PropertyTable head_pt = block.getHead();
+        PropertyTable head_pt = block.getCrypto().getHead();
+        byte[] body = block.getCrypto().getBody();
         Encryption en1 = new Encryption();
 
         head.loadFrom(head_pt);
 
-        en1.setEncrypted(block.getBody());
+        en1.setEncrypted(body);
         en1.setMode(head.mode);
         en1.setAlgorithm(head.algorithm);
         en1.setPadding(head.padding);
@@ -132,15 +135,24 @@ public class EncryptionLayerKP implements DataAccessLayer {
 
         Encryption en2 = CipherUtils.decrypt(en1, pair.getPrivate());
 
-        block.setPlain(en2.getPlain());
+        PlainBlock plain = new PlainBlock();
+        plain.setEncoded(new ByteSlice(en2.getPlain()));
+        plain.setMeta(head_pt);
+        block.setPlain(plain);
     }
 
     private static void encryptBlock(DataAccessBlock block, DataAccessRequest request) {
 
         KeyPair pair = request.getKeyPair();
         MyBlockHead head = new MyBlockHead();
-        PropertyTable head_pt = PropertyTable.Factory.create();
         Encryption en1 = new Encryption();
+        PlainBlock plain = block.getPlain();
+        PropertyTable head_pt = plain.getMeta();
+
+        if (head_pt == null) {
+            head_pt = PropertyTable.Factory.create();
+        }
+
 
         head.algorithm = pair.getPublic().getAlgorithm();
         head.mode = request.getMode();
@@ -149,16 +161,17 @@ public class EncryptionLayerKP implements DataAccessLayer {
         normalize(head);
         head.storeTo(head_pt);
 
-        en1.setEncrypted(block.getBody());
         en1.setMode(head.mode);
         en1.setAlgorithm(head.algorithm);
         en1.setPadding(head.padding);
         en1.setIv(head.iv);
-        en1.setPlain(block.getPlain());
+        en1.setPlain(plain.getEncoded().toByteArray());
 
         Encryption en2 = CipherUtils.encrypt(en1, pair.getPublic());
 
-        block.setHead(head_pt);
-        block.setBody(en2.getEncrypted());
+        CryptoBlock crypto = new CryptoBlock();
+        crypto.setHead(head_pt);
+        crypto.setBody(en2.getEncrypted());
+        block.setCrypto(crypto);
     }
 }

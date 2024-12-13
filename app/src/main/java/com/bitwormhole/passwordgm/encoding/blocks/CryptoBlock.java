@@ -1,13 +1,13 @@
-package com.bitwormhole.passwordgm.encoding.cryptfile;
+package com.bitwormhole.passwordgm.encoding.blocks;
 
 import com.bitwormhole.passwordgm.encoding.ptable.PropertyTable;
 
-public class CryptBlock {
+public class CryptoBlock {
 
     private PropertyTable head; // plain meta
     private byte[] body; // encrypted body data
 
-    public CryptBlock() {
+    public CryptoBlock() {
     }
 
     public byte[] getBody() {

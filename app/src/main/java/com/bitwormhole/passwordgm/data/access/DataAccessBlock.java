@@ -1,17 +1,36 @@
 package com.bitwormhole.passwordgm.data.access;
 
-import com.bitwormhole.passwordgm.encoding.cryptfile.CryptBlock;
+import com.bitwormhole.passwordgm.encoding.blocks.CryptoBlock;
+import com.bitwormhole.passwordgm.encoding.blocks.PlainBlock;
 import com.bitwormhole.passwordgm.encoding.ptable.PropertyTable;
 
-public class DataAccessBlock extends CryptBlock {
+public class DataAccessBlock {
 
-    private byte[] plain; // required
-    private String text; // optional
-    private PropertyTable properties; // optional
+    private CryptoBlock crypto;
+    private PlainBlock plain;
+
+    private String text; // optional : 用于文本格式
+    private PropertyTable properties; // optional : 用于属性表格式
 
     public DataAccessBlock() {
     }
 
+
+    public PlainBlock getPlain() {
+        return plain;
+    }
+
+    public void setPlain(PlainBlock plain) {
+        this.plain = plain;
+    }
+
+    public CryptoBlock getCrypto() {
+        return crypto;
+    }
+
+    public void setCrypto(CryptoBlock crypto) {
+        this.crypto = crypto;
+    }
 
     public String getText() {
         return text;
@@ -21,13 +40,6 @@ public class DataAccessBlock extends CryptBlock {
         this.text = text;
     }
 
-    public byte[] getPlain() {
-        return plain;
-    }
-
-    public void setPlain(byte[] plain) {
-        this.plain = plain;
-    }
 
     public PropertyTable getProperties() {
         return properties;

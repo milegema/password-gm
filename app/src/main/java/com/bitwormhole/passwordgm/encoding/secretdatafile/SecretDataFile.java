@@ -1,18 +1,7 @@
 package com.bitwormhole.passwordgm.encoding.secretdatafile;
 
-import com.bitwormhole.passwordgm.encoding.cryptfile.CryptFile;
-import com.bitwormhole.passwordgm.encoding.cryptfile.CryptFileUtils;
-import com.bitwormhole.passwordgm.encoding.pem.PEMDocument;
-import com.bitwormhole.passwordgm.encoding.pem.PEMUtils;
-import com.bitwormhole.passwordgm.encoding.ptable.PropertyTable;
 import com.bitwormhole.passwordgm.security.CipherMode;
-import com.bitwormhole.passwordgm.security.CipherUtils;
-import com.bitwormhole.passwordgm.security.Encryption;
 import com.bitwormhole.passwordgm.security.PaddingMode;
-import com.bitwormhole.passwordgm.security.SecurityRandom;
-import com.bitwormhole.passwordgm.utils.FileOptions;
-import com.bitwormhole.passwordgm.utils.PropertyGetter;
-import com.bitwormhole.passwordgm.utils.PropertySetter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

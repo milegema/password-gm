@@ -1,5 +1,7 @@
 package com.bitwormhole.passwordgm.contexts;
 
+import com.bitwormhole.passwordgm.data.repositories.Repository;
+
 import java.nio.file.Path;
 import java.security.KeyPair;
 
@@ -17,6 +19,7 @@ public class ContextBase {
     private String description;
     private SecretKey secretKey;
     private KeyPair keyPair;
+    private Repository repository;
 
 
     public ContextBase(ContextBase _parent, ContextScope _scope) {
@@ -78,6 +81,14 @@ public class ContextBase {
 
     public void setKeyPair(KeyPair keyPair) {
         this.keyPair = keyPair;
+    }
+
+    public Repository getRepository() {
+        return repository;
+    }
+
+    public void setRepository(Repository repository) {
+        this.repository = repository;
     }
 
     public SecretKey getSecretKey() {

@@ -5,11 +5,10 @@ import com.bitwormhole.passwordgm.data.access.DataAccessLayer;
 import com.bitwormhole.passwordgm.data.access.DataAccessReaderChain;
 import com.bitwormhole.passwordgm.data.access.DataAccessRequest;
 import com.bitwormhole.passwordgm.data.access.DataAccessWriterChain;
-import com.bitwormhole.passwordgm.encoding.cryptfile.CryptBlock;
-import com.bitwormhole.passwordgm.encoding.cryptfile.CryptFile;
-import com.bitwormhole.passwordgm.encoding.cryptfile.CryptFileUtils;
+import com.bitwormhole.passwordgm.encoding.blocks.CryptoBlock;
+import com.bitwormhole.passwordgm.encoding.blocks.CryptoFile;
+import com.bitwormhole.passwordgm.encoding.blocks.CryptoFileUtils;
 import com.bitwormhole.passwordgm.encoding.pem.PEMDocument;
-import com.bitwormhole.passwordgm.utils.Logs;
 
 import java.io.IOException;
 
@@ -19,18 +18,14 @@ public class CryptoLayer implements DataAccessLayer {
 
     }
 
-    private static DataAccessBlock convertForRead(CryptBlock src) {
+    private static DataAccessBlock convertForRead(CryptoBlock src) {
         DataAccessBlock dst = new DataAccessBlock();
-        dst.setHead(src.getHead());
-        dst.setBody(src.getBody());
-        dst.setPlain(null);
-        dst.setText(null);
-        dst.setProperties(null);
+        dst.setCrypto(src);
         return dst;
     }
 
-    private static CryptBlock convertForWrite(DataAccessBlock src) {
-        return src;
+    private static CryptoBlock convertForWrite(DataAccessBlock src) {
+        return src.getCrypto();
     }
 
     @Override
@@ -39,8 +34,8 @@ public class CryptoLayer implements DataAccessLayer {
         next.read(request);
 
         // crypt <== pem
-        CryptFile cf = CryptFileUtils.convert(request.getPem());
-        CryptBlock[] src = cf.getBlocks();
+        CryptoFile cf = CryptoFileUtils.convert(request.getPem());
+        CryptoBlock[] src = cf.getBlocks();
         DataAccessBlock[] dst = new DataAccessBlock[src.length];
         for (int i = 0; i < src.length; ++i) {
             dst[i] = convertForRead(src[i]);
@@ -58,14 +53,14 @@ public class CryptoLayer implements DataAccessLayer {
 
         // crypt ==> pem
         DataAccessBlock[] src = request.getBlocks();
-        CryptBlock[] dst = new CryptBlock[src.length];
+        CryptoBlock[] dst = new CryptoBlock[src.length];
         for (int i = 0; i < src.length; ++i) {
             dst[i] = convertForWrite(src[i]);
         }
 
-        CryptFile cf = new CryptFile();
+        CryptoFile cf = new CryptoFile();
         cf.setBlocks(dst);
-        PEMDocument pem = CryptFileUtils.convert(cf);
+        PEMDocument pem = CryptoFileUtils.convert(cf);
         request.setPem(pem);
 
         next.write(request);

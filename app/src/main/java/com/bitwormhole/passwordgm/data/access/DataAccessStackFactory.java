@@ -44,61 +44,34 @@ public final class DataAccessStackFactory {
 
 
     private static DataAccessStack createStack4mainDataContainer() {
-
-        DataAccessStackBuilder b = new DataAccessStackBuilder();
-
-        // layers: L --> H
-        b.add(new FileLayer());
-        b.add(new PemLayer());
-        b.add(new CryptoLayer());
-        b.add(new EncryptionLayerSK());
-        b.add(new PropertyLayer());
-
-
-        return b.create();
+        DataAccessStackConfig cfg = new DataAccessStackConfig();
+        cfg.keyContainer = false;
+        cfg.mock = false;
+        cfg.properties = true;
+        return cfg.createNewBuilder().create();
     }
 
     private static DataAccessStack createStack4mainKeyContainer() {
-
-        DataAccessStackBuilder b = new DataAccessStackBuilder();
-
-        // layers: L --> H
-        b.add(new FileLayer());
-        b.add(new PemLayer());
-        b.add(new CryptoLayer());
-        b.add(new EncryptionLayerKP());
-        b.add(new PropertyLayer());
-        b.add(new KeyContainerLayer());
-
-        return b.create();
+        DataAccessStackConfig cfg = new DataAccessStackConfig();
+        cfg.keyContainer = true;
+        cfg.mock = false;
+        cfg.properties = true;
+        return cfg.createNewBuilder().create();
     }
 
     private static DataAccessStack createStack4testDataContainer() {
-
-        DataAccessStackBuilder b = new DataAccessStackBuilder();
-
-        // layers: L --> H
-        b.add(new MockFileLayer());
-        b.add(new PemLayer());
-        b.add(new CryptoLayer());
-        b.add(new EncryptionLayerSK());
-        b.add(new PropertyLayer());
-
-        return b.create();
+        DataAccessStackConfig cfg = new DataAccessStackConfig();
+        cfg.keyContainer = false;
+        cfg.mock = true;
+        cfg.properties = true;
+        return cfg.createNewBuilder().create();
     }
 
     private static DataAccessStack createStack4testKeyContainer() {
-
-        DataAccessStackBuilder b = new DataAccessStackBuilder();
-
-        // layers: L --> H
-        b.add(new MockFileLayer());
-        b.add(new PemLayer());
-        b.add(new CryptoLayer());
-        b.add(new EncryptionLayerKP());
-        b.add(new PropertyLayer());
-        b.add(new KeyContainerLayer());
-
-        return b.create();
+        DataAccessStackConfig cfg = new DataAccessStackConfig();
+        cfg.keyContainer = true;
+        cfg.mock = true;
+        cfg.properties = true;
+        return cfg.createNewBuilder().create();
     }
 }

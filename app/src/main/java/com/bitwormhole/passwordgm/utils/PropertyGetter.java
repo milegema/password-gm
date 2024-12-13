@@ -2,11 +2,10 @@ package com.bitwormhole.passwordgm.utils;
 
 import android.util.NoSuchPropertyException;
 
+import com.bitwormhole.passwordgm.encoding.blocks.BlockType;
 import com.bitwormhole.passwordgm.encoding.ptable.PropertyTable;
 import com.bitwormhole.passwordgm.security.CipherMode;
 import com.bitwormhole.passwordgm.security.PaddingMode;
-
-import java.util.Properties;
 
 public class PropertyGetter {
 
@@ -121,32 +120,34 @@ public class PropertyGetter {
     }
 
 
-    public PaddingMode getPaddingMode(String name, PaddingMode def) {
+    public BlockType getBlockType(String name, BlockType def) {
         String str = innerGet(name);
-        PaddingMode value = null;
         try {
-            value = PaddingMode.valueOf(str);
+            return BlockType.valueOf(str);
         } catch (Exception e) {
             Errors.handle(null, e);
         }
-        if (value == null) {
-            value = def;
+        return def;
+    }
+
+
+    public PaddingMode getPaddingMode(String name, PaddingMode def) {
+        String str = innerGet(name);
+        try {
+            return PaddingMode.valueOf(str);
+        } catch (Exception e) {
+            Errors.handle(null, e);
         }
-        return value;
+        return def;
     }
 
     public CipherMode getCipherMode(String name, CipherMode def) {
         String str = innerGet(name);
-        CipherMode value = null;
         try {
-            value = CipherMode.valueOf(str);
+            return CipherMode.valueOf(str);
         } catch (Exception e) {
             Errors.handle(null, e);
         }
-        if (value == null) {
-            value = def;
-        }
-        return value;
+        return def;
     }
-
 }

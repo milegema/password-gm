@@ -53,6 +53,15 @@ public final class HashUtils {
             md.update(bin);
         }
 
+        void append(byte[] bin, int off, int len) {
+            if (bin == null) {
+                return;
+            }
+            MessageDigest md = this.getMD();
+            md.update(bin, off, len);
+        }
+
+
         byte[] sum() {
             MessageDigest md = this.getMD();
             return md.digest();
@@ -79,6 +88,12 @@ public final class HashUtils {
     public static byte[] sum(String data, String algorithm) {
         Hash h = new Hash(algorithm);
         h.append(data);
+        return h.sum();
+    }
+
+    public static byte[] sum(ByteSlice data, String algorithm) {
+        Hash h = new Hash(algorithm);
+        h.append(data.getData(), data.getOffset(), data.getLength());
         return h.sum();
     }
 
