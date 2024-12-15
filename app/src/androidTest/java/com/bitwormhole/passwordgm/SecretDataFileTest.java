@@ -14,6 +14,8 @@ import com.bitwormhole.passwordgm.data.store.TableManagerImpl;
 import com.bitwormhole.passwordgm.data.store.TableName;
 import com.bitwormhole.passwordgm.data.store.TableSelector;
 import com.bitwormhole.passwordgm.encoding.ptable.PropertyTable;
+import com.bitwormhole.passwordgm.encoding.secretdatafile.SecretDataFile;
+import com.bitwormhole.passwordgm.encoding.secretdatafile.SecretDataFileLS;
 import com.bitwormhole.passwordgm.security.KeyPairManager;
 import com.bitwormhole.passwordgm.security.KeyPairManagerImpl;
 import com.bitwormhole.passwordgm.security.KeySelector;
@@ -33,83 +35,14 @@ import java.nio.file.Path;
 public class SecretDataFileTest {
 
     @Test
-    public void useTableManager() {
+    public void useSecretDataFile() throws IOException {
 
 
-        TableSelector sel = new TableSelector();
-        sel.setScope(ContextScope.TEST);
-        sel.setUser(new UserAlias("test"));
-        sel.setTable(TableName.test1);
+        // todo ...
+        SecretDataFile sd_file = new SecretDataFile();
+        SecretDataFileLS.save(sd_file);
 
-        TableManager tm = this.initTableManager(sel.getUser());
-        TableHolder th1 = tm.getTable(sel);
-        TableHolder th2 = tm.getTable(sel);
-        TableHolder th3 = tm.getTable(sel);
-        TableHolder th4 = tm.getTable(sel);
-
-        // write th1
-        PropertyTable pt = th1.properties();
-        pt.put("a", "1");
-        pt.put("b", "2");
-        pt.put("c", "3");
-        th1.commit();
-
-        // read th2
-        th2.reload();
-        this.logTable("TableHolder-2", th2);
-
-        // write th3
-        th3.reload();
-        pt = th3.properties();
-        pt.put("aa", "11");
-        pt.put("bb", "22");
-        pt.put("cc", "33");
-        th3.commit();
-
-        // read th4
-        th4.reload();
-        this.logTable("TableHolder-4", th4);
-    }
-
-    private void logTable(String tag, TableHolder th) {
-        PropertyTable pt = th.properties();
-        String[] ids = pt.names();
-        Logs.info(tag + " - begin");
-        for (String name : ids) {
-            String value = pt.get(name);
-            Logs.info("\t" + name + " = " + value);
-        }
-        Logs.info(tag + " - end");
     }
 
 
-    private TableManager initTableManager(UserAlias user) {
-        Context ctx = ApplicationProvider.getApplicationContext();
-        KeyPairManager kpm = new KeyPairManagerImpl();
-        SecretKeyManagerImpl skm = new SecretKeyManagerImpl();
-        TableContext table_context = new TableContext();
-        TableManagerImpl tm = new TableManagerImpl();
-
-        Path dir = ctx.getDataDir().toPath().resolve(".test");
-
-        skm.setKeyPairManager(kpm);
-        skm.setSecretKeysFolder(dir.resolve("keys"));
-
-        table_context.setBaseDir(dir);
-        table_context.setSecretKeyManager(skm);
-
-
-        tm.setContext(table_context);
-
-
-        this.prepareKeys(skm, user);
-        return tm;
-    }
-
-    private void prepareKeys(SecretKeyManager skm, UserAlias user) {
-        SecretKeyHolder skh = skm.get(KeySelector.alias(user));
-        if (!skh.exists()) {
-            skh.create();
-        }
-    }
 }

@@ -14,4 +14,6 @@ public abstract class Repository {
 
     public abstract ContextScope scope();
 
+    public abstract RepositorySecretKey key();
+
 }

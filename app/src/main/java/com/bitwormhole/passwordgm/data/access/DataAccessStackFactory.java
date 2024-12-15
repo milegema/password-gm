@@ -1,14 +1,5 @@
 package com.bitwormhole.passwordgm.data.access;
 
-import com.bitwormhole.passwordgm.data.access.layers.CryptoLayer;
-import com.bitwormhole.passwordgm.data.access.layers.EncryptionLayerKP;
-import com.bitwormhole.passwordgm.data.access.layers.EncryptionLayerSK;
-import com.bitwormhole.passwordgm.data.access.layers.FileLayer;
-import com.bitwormhole.passwordgm.data.access.layers.KeyContainerLayer;
-import com.bitwormhole.passwordgm.data.access.layers.MockFileLayer;
-import com.bitwormhole.passwordgm.data.access.layers.PemLayer;
-import com.bitwormhole.passwordgm.data.access.layers.PropertyLayer;
-
 public final class DataAccessStackFactory {
 
 
@@ -23,6 +14,16 @@ public final class DataAccessStackFactory {
     private DataAccessStackFactory() {
     }
 
+    /***
+     * 带缓存的 getInstance 方法
+     * */
+    public static DataAccessStack getStack(CONFIG cfg) {
+        return createStack(cfg);
+    }
+
+    /***
+     * 不带缓存的 newInstance 方法
+     * */
     public static DataAccessStack createStack(CONFIG cfg) {
         if (cfg == null) {
             cfg = CONFIG.MAIN_DATA_CONTAINER;

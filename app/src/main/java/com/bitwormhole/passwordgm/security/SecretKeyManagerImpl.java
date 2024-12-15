@@ -14,7 +14,23 @@ import java.security.NoSuchAlgorithmException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
+
+/***
+ * [已废弃] 用 RepositorySecretKey 代替
+ * */
+
+
+@Deprecated
+
 public class SecretKeyManagerImpl implements SecretKeyManager {
+
+
+    @Override
+    public SecretKeyHolder get(KeyAlias alias) {
+        return null;
+    }
+
+    /*
 
     private KeyPairManager keyPairManager;
     private Path secretKeysFolder;
@@ -175,4 +191,10 @@ public class SecretKeyManagerImpl implements SecretKeyManager {
         Path f = this.secretKeysFolder.resolve(alias.getValue());
         return new MySecretKeyHolder(kph, f);
     }
+
+
+
+     */
+
+
 }

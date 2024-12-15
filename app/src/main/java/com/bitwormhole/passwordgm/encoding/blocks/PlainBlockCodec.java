@@ -29,7 +29,7 @@ public class PlainBlockCodec {
         // get meta
         final byte[] id_bin = meta_g.getDataHex(FIELD_ID, null);
         final int len_want = meta_g.getInt(FIELD_CONTENT_LEN, 0);
-        final BlockType type_want = meta_g.getBlockType(FIELD_TYPE, BlockType.blob);
+        final BlockType type_want = meta_g.getBlockType(FIELD_TYPE, BlockType.BLOB);
 
         // decode
         PlainBlock tmp = innerDecodeContent(encoded);

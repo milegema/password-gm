@@ -2,10 +2,13 @@ package com.bitwormhole.passwordgm;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.bitwormhole.passwordgm.data.access.DataAccessBlock;
 import com.bitwormhole.passwordgm.data.access.DataAccessRequest;
 import com.bitwormhole.passwordgm.data.access.DataAccessStack;
 import com.bitwormhole.passwordgm.data.access.DataAccessStackFactory;
+import com.bitwormhole.passwordgm.encoding.blocks.BlockType;
 import com.bitwormhole.passwordgm.encoding.ptable.PropertyTable;
+import com.bitwormhole.passwordgm.encoding.ptable.PropertyTableLS;
 import com.bitwormhole.passwordgm.security.CipherMode;
 import com.bitwormhole.passwordgm.security.Encryption;
 import com.bitwormhole.passwordgm.security.PaddingMode;
@@ -22,7 +25,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import javax.crypto.KeyGenerator;
@@ -154,7 +159,7 @@ public class DataContainerTest {
         DataAccessRequest req1 = new DataAccessRequest();
         req1.setFile(cfg.file);
         req1.setSecretKey(cfg.key);
-        req1.setPropertiesW(pt1);
+        req1.setBlocks(encode(pt1));
         req1.setMode(cfg.mode.getMode());
         req1.setPadding(cfg.mode.getPadding());
         stack.getWriter().write(req1);
@@ -164,9 +169,28 @@ public class DataContainerTest {
         req2.setFile(cfg.file);
         req2.setSecretKey(cfg.key);
         stack.getReader().read(req2);
-        PropertyTable pt2 = req2.getPropertiesR();
+        PropertyTable pt2 = decode(req2.getBlocks());
 
         this.checkPropertyTable12(pt1, pt2);
+    }
+
+    private static DataAccessBlock[] encode(PropertyTable src) {
+        byte[] bin = PropertyTableLS.encode(src);
+        DataAccessBlock block = new DataAccessBlock();
+        block.setPlain(BlockType.Properties, bin);
+        return new DataAccessBlock[]{block};
+    }
+
+    private static PropertyTable decode(DataAccessBlock[] src) {
+        Map<String, String> tmp = new HashMap<>();
+        for (DataAccessBlock item : src) {
+            byte[] bin = item.getPlainContent();
+            PropertyTable pt1 = PropertyTableLS.decode(bin);
+            tmp = pt1.exportAll(tmp);
+        }
+        PropertyTable pt2 = PropertyTable.Factory.create();
+        pt2.importAll(tmp);
+        return pt2;
     }
 
     private void logConfig(MyConfig cfg) {

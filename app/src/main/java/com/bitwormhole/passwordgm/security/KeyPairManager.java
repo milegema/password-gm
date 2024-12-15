@@ -6,4 +6,6 @@ public interface KeyPairManager {
 
     KeyPairHolder get(KeyAlias alias);
 
+    KeyAlias[] listAliases();
+
 }

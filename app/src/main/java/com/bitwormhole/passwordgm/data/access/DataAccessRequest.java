@@ -1,7 +1,6 @@
 package com.bitwormhole.passwordgm.data.access;
 
 import com.bitwormhole.passwordgm.encoding.pem.PEMDocument;
-import com.bitwormhole.passwordgm.encoding.ptable.PropertyTable;
 import com.bitwormhole.passwordgm.security.CipherMode;
 import com.bitwormhole.passwordgm.security.PaddingMode;
 
@@ -15,7 +14,8 @@ public class DataAccessRequest {
     private DataAccessStack stack;
 
     private Path file;
-    private byte[] raw;
+    private byte[] raw; // 直接从文件读写的原始数据
+    private DataAccessMode dam;
 
     private PEMDocument pem;
 
@@ -28,14 +28,10 @@ public class DataAccessRequest {
 
 
     private DataAccessBlock[] blocks;
-    private PropertyTable propertiesR; // mix of blocks
-    private PropertyTable propertiesW; // append to file
 
-    private boolean overwriteWholeFile; // 复写整个文件
 
     public DataAccessRequest() {
     }
-
 
     public DataAccessStack getStack() {
         return stack;
@@ -117,27 +113,11 @@ public class DataAccessRequest {
         this.blocks = blocks;
     }
 
-    public PropertyTable getPropertiesR() {
-        return propertiesR;
+    public DataAccessMode getDam() {
+        return dam;
     }
 
-    public void setPropertiesR(PropertyTable propertiesR) {
-        this.propertiesR = propertiesR;
-    }
-
-    public PropertyTable getPropertiesW() {
-        return propertiesW;
-    }
-
-    public void setPropertiesW(PropertyTable propertiesW) {
-        this.propertiesW = propertiesW;
-    }
-
-    public boolean isOverwriteWholeFile() {
-        return overwriteWholeFile;
-    }
-
-    public void setOverwriteWholeFile(boolean overwriteWholeFile) {
-        this.overwriteWholeFile = overwriteWholeFile;
+    public void setDam(DataAccessMode dam) {
+        this.dam = dam;
     }
 }

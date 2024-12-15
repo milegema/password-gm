@@ -124,7 +124,7 @@ public class EncryptionLayerSK implements DataAccessLayer {
         CryptoBlock crypto = new CryptoBlock();
         crypto.setHead(head_pt);
         crypto.setBody(en2.getEncrypted());
-        block.setCrypto(crypto);
+        block.setEncrypted(crypto);
     }
 
     private void prepareEncrypt(Encryption en) {
@@ -159,7 +159,7 @@ public class EncryptionLayerSK implements DataAccessLayer {
         SecretKey key = request.getSecretKey();
         Encryption en1 = new Encryption();
         MyBlockHead head = new MyBlockHead();
-        CryptoBlock crypto = block.getCrypto();
+        CryptoBlock crypto = block.getEncrypted();
 
         head.loadFrom(crypto.getHead());
 

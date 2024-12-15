@@ -1,5 +1,11 @@
 package com.bitwormhole.passwordgm.encoding.secretdatafile;
 
+import com.bitwormhole.passwordgm.data.access.DataAccessBlock;
+import com.bitwormhole.passwordgm.data.access.DataAccessMode;
+import com.bitwormhole.passwordgm.data.access.DataAccessRequest;
+import com.bitwormhole.passwordgm.data.access.DataAccessStack;
+import com.bitwormhole.passwordgm.data.access.DataAccessStackFactory;
+import com.bitwormhole.passwordgm.encoding.blocks.BlockType;
 import com.bitwormhole.passwordgm.security.CipherMode;
 import com.bitwormhole.passwordgm.security.PaddingMode;
 
@@ -16,162 +22,34 @@ public class SecretDataFile {
     private CipherMode mode;
     private PaddingMode padding;
     private byte[] iv;
+    private DataAccessMode dam;
+    private BlockType type;
 
     public SecretDataFile() {
     }
 
-    /*
-
-
-    public static class Head {
-        public CipherMode mode;
-        public PaddingMode padding;
-        public String algorithm;
-        public byte[] iv; // 在 props 中编码为 hex 格式
-
-        public Head() {
-        }
-
-        final static String CIPHER_ALGORITHM = "algorithm";
-        final static String CIPHER_MODE = "mode";
-        final static String CIPHER_PADDING = "padding";
-        final static String CIPHER_IV = "iv";
-    }
-
-
-
-
-    private static PropertyTable head2props(Head src) {
-        PropertyTable dst = PropertyTable.Factory.create();
-        PropertySetter setter = new PropertySetter(dst);
-        setter.put(Head.CIPHER_ALGORITHM, src.algorithm);
-        setter.put(Head.CIPHER_MODE, src.mode);
-        setter.put(Head.CIPHER_PADDING, src.padding);
-        setter.put(Head.CIPHER_IV, src.iv);
-        return dst;
-    }
-
-    private static Head props2head(PropertyTable src) {
-        Head dst = new Head();
-        if (src == null) {
-            return dst;
-        }
-        PropertyGetter getter = new PropertyGetter(src);
-        getter.setRequired(false);
-        dst.algorithm = getter.getString(Head.CIPHER_ALGORITHM, "AES");
-        dst.padding = getter.getPaddingMode(Head.CIPHER_PADDING, PaddingMode.NoPadding);
-        dst.mode = getter.getCipherMode(Head.CIPHER_MODE, CipherMode.ECB);
-        dst.iv = getter.getHexData(Head.CIPHER_IV, null);
-        return dst;
-    }
-
-    private static Head prepareHead(Head h1) {
-        if (h1 == null) {
-            h1 = new Head();
-        }
-        if (h1.mode == null) {
-            h1.mode = CipherMode.ECB;
-        }
-        if (h1.padding == null) {
-            h1.padding = PaddingMode.PKCS7Padding;
-        }
-
-        boolean need_iv = false;
-        switch (h1.mode) {
-            case CBC:
-            case PCBC:
-            case CFB:
-            case OFB:
-                need_iv = true;
-                break;
-        }
-
-        if (need_iv) {
-            if (h1.iv == null) {
-                byte[] buffer = new byte[16];
-                SecurityRandom.getRandom().nextBytes(buffer);
-                h1.iv = buffer;
-            }
-        } else {
-            h1.iv = null;
-        }
-        return h1;
-    }
-
-
-
-     */
 
     public byte[] read() throws IOException {
 
-        /*
 
-        PEMDocument pem_doc = PEMUtils.read(this.file);
-        CryptFile crypt_file = CryptFileUtils.convert(pem_doc);
-        Head head = props2head(crypt_file.getHead());
-        this.mode = head.mode;
-        this.padding = head.padding;
-        this.iv = head.iv;
-
-        Encryption en1 = new Encryption();
-        en1.setIv(head.iv);
-        en1.setMode(head.mode);
-        en1.setAlgorithm(head.algorithm);
-        en1.setPadding(head.padding);
-        en1.setEncrypted(crypt_file.getBody());
-
-        Encryption en2 = CipherUtils.decrypt(en1, this.key);
-        return en2.getPlain();
-
-         */
-
-        throw new RuntimeException( "no impl" ) ;
+        throw new RuntimeException("no impl");
     }
 
     public void write(byte[] data) throws IOException {
 
-        /*
+        DataAccessRequest req = new DataAccessRequest();
+        DataAccessStack stack = DataAccessStackFactory.getStack(DataAccessStackFactory.CONFIG.MAIN_DATA_CONTAINER);
+        DataAccessBlock block = new DataAccessBlock();
 
-        // init head
-        Head head = new Head();
-        head.algorithm = this.key.getAlgorithm();
-        head.mode = this.mode;
-        head.padding = this.padding;
-        head.iv = this.iv;
+        block.setPlain(this.type, data);
 
-        // prepare head
-        head = prepareHead(head);
-        this.iv = head.iv;
-        this.mode = head.mode;
-        this.padding = head.padding;
+        req.setDam(this.dam);
+        req.setFile(this.file);
+        req.setKeyPair(null);
+        req.setSecretKey(this.key);
+        req.setBlocks(new DataAccessBlock[]{block});
 
-        // encrypt
-        Encryption en1 = new Encryption();
-        en1.setIv(head.iv);
-        en1.setMode(head.mode);
-        en1.setAlgorithm(head.algorithm);
-        en1.setPadding(head.padding);
-        en1.setPlain(data);
-        Encryption en2 = CipherUtils.encrypt(en1, this.key);
-
-        // make crypt file
-        CryptFile crypt_file = new CryptFile();
-        crypt_file.setHead(head2props(head));
-        crypt_file.setBody(en2.getEncrypted());
-
-        // write to PEM file
-        PEMDocument pem_doc = CryptFileUtils.convert(crypt_file);
-        FileOptions opt = new FileOptions();
-        opt.create = true;
-        opt.write = true;
-        opt.truncate = true;
-        opt.mkdirs = true;
-        PEMUtils.write(pem_doc, this.file, opt);
-
-         */
-
-        throw new RuntimeException( "no impl" ) ;
-
+        stack.getWriter().write(req);
     }
 
     public void write(byte[] data, int offset, int length) throws IOException {
@@ -197,6 +75,13 @@ public class SecretDataFile {
         this.mode = mode;
     }
 
+    public BlockType getType() {
+        return type;
+    }
+
+    public void setType(BlockType type) {
+        this.type = type;
+    }
 
     public byte[] getIv() {
         return iv;
@@ -220,5 +105,13 @@ public class SecretDataFile {
 
     public void setFile(Path file) {
         this.file = file;
+    }
+
+    public DataAccessMode getDam() {
+        return dam;
+    }
+
+    public void setDam(DataAccessMode dam) {
+        this.dam = dam;
     }
 }

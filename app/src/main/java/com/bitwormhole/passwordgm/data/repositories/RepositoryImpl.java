@@ -14,11 +14,16 @@ public class RepositoryImpl extends Repository {
 
     @Override
     public Path location() {
-        return null;
+        return this.context.getLayout().getRepository();
     }
 
     @Override
     public ContextScope scope() {
-        return null;
+        return this.context.getScope();
+    }
+
+    @Override
+    public RepositorySecretKey key() {
+        return null; //   this.context. ;
     }
 }

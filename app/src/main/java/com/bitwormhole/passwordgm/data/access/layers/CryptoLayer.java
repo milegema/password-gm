@@ -20,12 +20,12 @@ public class CryptoLayer implements DataAccessLayer {
 
     private static DataAccessBlock convertForRead(CryptoBlock src) {
         DataAccessBlock dst = new DataAccessBlock();
-        dst.setCrypto(src);
+        dst.setEncrypted(src);
         return dst;
     }
 
     private static CryptoBlock convertForWrite(DataAccessBlock src) {
-        return src.getCrypto();
+        return src.getEncrypted();
     }
 
     @Override

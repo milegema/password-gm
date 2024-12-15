@@ -1,13 +1,12 @@
 package com.bitwormhole.passwordgm.data.access.layers;
 
 import com.bitwormhole.passwordgm.data.access.DataAccessLayer;
+import com.bitwormhole.passwordgm.data.access.DataAccessMode;
 import com.bitwormhole.passwordgm.data.access.DataAccessReaderChain;
 import com.bitwormhole.passwordgm.data.access.DataAccessRequest;
 import com.bitwormhole.passwordgm.data.access.DataAccessWriterChain;
-import com.bitwormhole.passwordgm.utils.FileIO;
 import com.bitwormhole.passwordgm.utils.FileOptions;
 import com.bitwormhole.passwordgm.utils.FileUtils;
-import com.bitwormhole.passwordgm.utils.Logs;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -35,14 +34,14 @@ public class FileLayer implements DataAccessLayer {
         // Logs.debug(this + ".write() : begin");
 
         Path file = request.getFile();
-        boolean full = request.isOverwriteWholeFile();
+        DataAccessMode mode = request.getDam();
         byte[] raw = request.getRaw();
         FileOptions opt = new FileOptions();
 
-        if (full) {
-            opt.truncate = true;
-        } else {
+        if (DataAccessMode.APPEND.equals(mode)) {
             opt.append = true;
+        } else {
+            opt.truncate = true;
         }
         opt.mkdirs = true;
         opt.create = true;

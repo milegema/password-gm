@@ -5,6 +5,7 @@ import android.security.keystore.KeyProperties;
 
 import com.bitwormhole.passwordgm.data.ids.KeyAlias;
 import com.bitwormhole.passwordgm.utils.Errors;
+import com.bitwormhole.passwordgm.utils.HashUtils;
 
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
@@ -18,7 +19,10 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.List;
 
 public class KeyPairManagerImpl implements KeyPairManager {
 
@@ -28,11 +32,29 @@ public class KeyPairManagerImpl implements KeyPairManager {
         return new MyKeyHolder(alias);
     }
 
+    @Override
+    public KeyAlias[] listAliases() {
+        List<KeyAlias> dst = new ArrayList<>();
+        try {
+            KeyStore store = getKeyStore();
+            Enumeration<String> src = store.aliases();
+            while (src.hasMoreElements()) {
+                String al = src.nextElement();
+                dst.add(new KeyAlias(al));
+            }
+        } catch (CertificateException | KeyStoreException | NoSuchAlgorithmException |
+                 IOException e) {
+            Errors.handle(null, e);
+        }
+        return dst.toArray(new KeyAlias[0]);
+    }
+
 
     private static class MyKeyHolder implements KeyPairHolder {
 
         private final KeyAlias mAlias;
         private KeyPair mKeyPair;
+        private KeyFingerprint mFinger;
 
         public MyKeyHolder(KeyAlias alias) {
             this.mAlias = new KeyAlias(alias);
@@ -41,6 +63,16 @@ public class KeyPairManagerImpl implements KeyPairManager {
         @Override
         public KeyAlias alias() {
             return this.mAlias;
+        }
+
+        @Override
+        public KeyFingerprint fingerprint() {
+            KeyFingerprint fp = mFinger;
+            if (fp == null) {
+                fp = loadFingerprint(this);
+                mFinger = fp;
+            }
+            return fp;
         }
 
         @Override
@@ -120,6 +152,13 @@ public class KeyPairManagerImpl implements KeyPairManager {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    private static KeyFingerprint loadFingerprint(MyKeyHolder h) {
+        PublicKey pub = h.fetch().getPublic();
+        byte[] bin = pub.getEncoded();
+        byte[] sum = HashUtils.sum(bin, HashUtils.SHA256);
+        return new KeyFingerprint(sum);
     }
 
     private static KeyStore getKeyStore() throws CertificateException, IOException, NoSuchAlgorithmException, KeyStoreException {

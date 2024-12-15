@@ -9,9 +9,12 @@ public class PlainBlock {
 
     private PropertyTable meta;
     private BlockID id;
-    private BlockType type;
     private ByteSlice encoded; // encoded = (type +'sp'+ length +'\0'+ content)
+
+
+    private BlockType type;
     private ByteSlice content;
+
 
     public PlainBlock() {
     }

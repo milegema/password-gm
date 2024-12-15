@@ -3,8 +3,10 @@ package com.bitwormhole.passwordgm.data.repositories;
 import com.bitwormhole.passwordgm.errors.PGMErrorCode;
 import com.bitwormhole.passwordgm.errors.PGMException;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.NoSuchAlgorithmException;
 
 public class RepositoryFactory {
 
@@ -27,7 +29,7 @@ public class RepositoryFactory {
 
     /**
      * 创建并初始化新的仓库
-     * */
+     */
     public static Repository init(RepositoryParams params) {
 
         Path dir = params.getLocation();
@@ -36,10 +38,23 @@ public class RepositoryFactory {
             throw new PGMException(PGMErrorCode.Unknown, msg);
         }
 
-        RepositoryLayout.Builder b = new RepositoryLayout.Builder();
-        b.setDotPGM(dir.resolve(".pgm"));
-        RepositoryLayout l = b.create();
 
+        final String name_want = RepositoryLayout.REGULAR_REPO_FOLDER_NAME;
+        final String name_have = dir.getFileName().toString();
+        if (!name_want.equals(name_have)) {
+            dir = dir.resolve(name_want);
+        }
+
+        RepositoryLayout.Builder b = new RepositoryLayout.Builder();
+        b.setDotPasswordGM(dir);
+        RepositoryLayout l = b.create();
+        try {
+            RepositoryInit repo_init = new RepositoryInit();
+            repo_init.setKeyPair(params.getKeyPair());
+            repo_init.init(l);
+        } catch (NoSuchAlgorithmException | IOException e) {
+            throw new RuntimeException(e);
+        }
 
         return open(params);
     }

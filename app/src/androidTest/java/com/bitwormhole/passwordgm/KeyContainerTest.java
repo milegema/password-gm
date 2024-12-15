@@ -2,10 +2,13 @@ package com.bitwormhole.passwordgm;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.bitwormhole.passwordgm.data.access.DataAccessBlock;
 import com.bitwormhole.passwordgm.data.access.DataAccessRequest;
 import com.bitwormhole.passwordgm.data.access.DataAccessStack;
 import com.bitwormhole.passwordgm.data.access.DataAccessStackFactory;
+import com.bitwormhole.passwordgm.encoding.blocks.BlockType;
 import com.bitwormhole.passwordgm.encoding.ptable.PropertyTable;
+import com.bitwormhole.passwordgm.errors.PGMException;
 import com.bitwormhole.passwordgm.security.CipherMode;
 import com.bitwormhole.passwordgm.security.Encryption;
 import com.bitwormhole.passwordgm.security.PaddingMode;
@@ -29,6 +32,7 @@ import java.util.Random;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 @RunWith(AndroidJUnit4.class)
 public class KeyContainerTest {
@@ -159,9 +163,25 @@ public class KeyContainerTest {
         req2.setFile(cfg.file);
         req2.setKeyPair(cfg.kp);
         stack.getReader().read(req2);
-        PropertyTable pt2 = req2.getPropertiesR();
 
-        this.checkSecretKey12(req1.getSecretKey(), req2.getSecretKey());
+        // PropertyTable pt2 = req2.getPropertiesR();
+        SecretKey sk2 = decodeSK(req2);
+
+        this.checkSecretKey12(req1.getSecretKey(), sk2);
+    }
+
+    private static SecretKey decodeSK(DataAccessRequest req) {
+        DataAccessBlock[] b_list = req.getBlocks();
+        String algorithm = "AES";
+        for (DataAccessBlock block : b_list) {
+            BlockType type = block.getPlainType();
+            byte[] bin = block.getPlainContent();
+            if (BlockType.SecretKey.equals(type)) {
+                return new SecretKeySpec(bin, algorithm);
+            }
+        }
+        // return null;
+        throw new RuntimeException("no secret-key block found");
     }
 
     private void logConfig(MyConfig cfg) {

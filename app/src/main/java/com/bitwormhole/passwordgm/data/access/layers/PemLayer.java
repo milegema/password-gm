@@ -1,6 +1,7 @@
 package com.bitwormhole.passwordgm.data.access.layers;
 
 import com.bitwormhole.passwordgm.data.access.DataAccessLayer;
+import com.bitwormhole.passwordgm.data.access.DataAccessMode;
 import com.bitwormhole.passwordgm.data.access.DataAccessReaderChain;
 import com.bitwormhole.passwordgm.data.access.DataAccessRequest;
 import com.bitwormhole.passwordgm.data.access.DataAccessWriterChain;
@@ -33,7 +34,8 @@ public class PemLayer implements DataAccessLayer {
         // Logs.debug(this + ".write() : begin");
 
         String str = PEMUtils.encode(request.getPem());
-        if (!request.isOverwriteWholeFile()) {
+        DataAccessMode mode = request.getDam();
+        if (DataAccessMode.APPEND.equals(mode)) {
             final String nl = "\n";
             str = nl + str + nl;
         }

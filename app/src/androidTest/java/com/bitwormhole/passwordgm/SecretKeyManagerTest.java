@@ -22,9 +22,13 @@ import java.nio.file.Path;
 
 import javax.crypto.SecretKey;
 
+@Deprecated
 
 @RunWith(AndroidJUnit4.class)
 public class SecretKeyManagerTest {
+
+    /*
+
 
     @Test
     public void useSecretKeyManager() {
@@ -62,4 +66,6 @@ public class SecretKeyManagerTest {
         String hex = HashUtils.hexSum(bin, HashUtils.SHA256);
         Logs.info(tag + ".fingerprint = " + hex);
     }
+
+     */
 }

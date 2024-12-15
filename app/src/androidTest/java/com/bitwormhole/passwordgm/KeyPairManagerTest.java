@@ -4,6 +4,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.bitwormhole.passwordgm.contexts.ContextScope;
 import com.bitwormhole.passwordgm.data.ids.KeyAlias;
+import com.bitwormhole.passwordgm.security.KeyFingerprint;
 import com.bitwormhole.passwordgm.security.KeyPairHolder;
 import com.bitwormhole.passwordgm.security.KeyPairManagerImpl;
 import com.bitwormhole.passwordgm.security.KeySelector;
@@ -16,6 +17,7 @@ import org.junit.runner.RunWith;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.Arrays;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -34,7 +36,7 @@ public class KeyPairManagerTest {
 
         PrivateKey pri = kp.getPrivate();
         PublicKey pub = kp.getPublic();
-        String finger = computeFingerprint(h);
+        KeyFingerprint finger = h.fingerprint(); // computeFingerprint(h);
 
         Logs.info("private-key: " + pri);
         Logs.info("public--key: " + pub);
@@ -61,6 +63,38 @@ public class KeyPairManagerTest {
         Logs.info("public-key-finger2: " + f2);
         Logs.info("alias: " + alias);
     }
+
+    @Test
+    public void useWithRootAndUserEmail() {
+
+        KeyAlias alias1 = new KeyAlias("root");
+        KeyAlias alias2 = new KeyAlias("user@domain.example");
+
+
+        KeyPairManagerImpl kpm = new KeyPairManagerImpl();
+        KeyPairHolder h1 = kpm.get(alias1);
+        KeyPairHolder h2 = kpm.get(alias2);
+
+        if (!h1.exists()) {
+            h1.create();
+        }
+        if (!h2.exists()) {
+            h2.create();
+        }
+
+        // re-get
+        h1 = kpm.get(h1.alias());
+        h2 = kpm.get(h2.alias());
+        KeyAlias[] ids = kpm.listAliases();
+
+        String f1 = h1.fingerprint().toString();
+        String f2 = h2.fingerprint().toString();
+
+        Logs.info("public-key-finger1: " + f1);
+        Logs.info("public-key-finger2: " + f2);
+        Logs.info("alias-list: " + Arrays.toString(ids));
+    }
+
 
     private static String computeFingerprint(KeyPairHolder h) {
         PublicKey pub = h.fetch().getPublic();

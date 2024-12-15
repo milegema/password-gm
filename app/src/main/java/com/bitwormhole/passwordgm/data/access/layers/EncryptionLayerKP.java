@@ -121,8 +121,8 @@ public class EncryptionLayerKP implements DataAccessLayer {
 
         KeyPair pair = request.getKeyPair();
         MyBlockHead head = new MyBlockHead();
-        PropertyTable head_pt = block.getCrypto().getHead();
-        byte[] body = block.getCrypto().getBody();
+        PropertyTable head_pt = block.getEncrypted().getHead();
+        byte[] body = block.getEncrypted().getBody();
         Encryption en1 = new Encryption();
 
         head.loadFrom(head_pt);
@@ -172,6 +172,6 @@ public class EncryptionLayerKP implements DataAccessLayer {
         CryptoBlock crypto = new CryptoBlock();
         crypto.setHead(head_pt);
         crypto.setBody(en2.getEncrypted());
-        block.setCrypto(crypto);
+        block.setEncrypted(crypto);
     }
 }

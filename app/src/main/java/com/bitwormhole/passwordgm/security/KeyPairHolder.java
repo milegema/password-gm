@@ -16,4 +16,6 @@ public interface KeyPairHolder {
 
     KeyAlias alias();
 
+    KeyFingerprint fingerprint();
+
 }
