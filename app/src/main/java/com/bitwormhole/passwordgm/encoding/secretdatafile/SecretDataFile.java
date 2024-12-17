@@ -31,8 +31,28 @@ public class SecretDataFile {
 
     public byte[] read() throws IOException {
 
+        DataAccessRequest req = new DataAccessRequest();
+        DataAccessStack stack = DataAccessStackFactory.getStack(DataAccessStackFactory.CONFIG.MAIN_DATA_CONTAINER);
+        // DataAccessBlock block = new DataAccessBlock();
 
-        throw new RuntimeException("no impl");
+        req.setStack(stack);
+        req.setFile(this.file);
+        req.setSecretKey(this.key);
+        req.setDam(this.dam);
+        req.setPadding(this.padding);
+        req.setMode(this.mode);
+        req.setIv(this.iv);
+        req.setBlocks(null);
+
+        stack.getReader().read(req);
+
+        DataAccessBlock[] blocks = req.getBlocks();
+        for (DataAccessBlock block : blocks) {
+            this.setType(block.getPlainType());
+            return block.getPlainContent();
+        }
+
+        throw new IOException("no PEM block in the file");
     }
 
     public void write(byte[] data) throws IOException {
