@@ -1,5 +1,8 @@
 package com.bitwormhole.passwordgm;
 
+import android.content.Context;
+
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.bitwormhole.passwordgm.data.access.DataAccessBlock;
@@ -8,6 +11,8 @@ import com.bitwormhole.passwordgm.data.access.DataAccessStack;
 import com.bitwormhole.passwordgm.data.access.DataAccessStackFactory;
 import com.bitwormhole.passwordgm.encoding.blocks.BlockType;
 import com.bitwormhole.passwordgm.encoding.ptable.PropertyTable;
+import com.bitwormhole.passwordgm.encoding.secretkeyfile.SecretKeyFile;
+import com.bitwormhole.passwordgm.encoding.secretkeyfile.SecretKeyFileLS;
 import com.bitwormhole.passwordgm.errors.PGMException;
 import com.bitwormhole.passwordgm.security.CipherMode;
 import com.bitwormhole.passwordgm.security.Encryption;
@@ -42,10 +47,12 @@ public class KeyContainerTest {
 
         SecretKey s_key = prepareSecretKey();
         KeyPair keypair = prepareKeyPair();
-
         List<Encryption> mode_list = listExampleMode();
+        Context ctx = ApplicationProvider.getApplicationContext();
+
+        Path dir = ctx.getDataDir().toPath();
+        dir = dir.resolve("tmp/test/" + this.getClass().getName() + "/config");
         int index = 0;
-        Path dir = Paths.get("/tmp/test/" + this.getClass().getName() + "/config");
 
         for (Encryption mode : mode_list) {
             MyConfig cfg = new MyConfig();
@@ -145,29 +152,26 @@ public class KeyContainerTest {
 
     private void run(MyConfig cfg) throws IOException {
 
-        DataAccessStack stack = DataAccessStackFactory.createStack(DataAccessStackFactory.CONFIG.TEST_KEY_CONTAINER);
-        // PropertyTable pt1 = cfg.data;
+        //   DataAccessStack stack = DataAccessStackFactory.createStack(DataAccessStackFactory.CONFIG.TEST_KEY_CONTAINER);
         this.logConfig(cfg);
 
-        // write
-        DataAccessRequest req1 = new DataAccessRequest();
-        req1.setFile(cfg.file);
-        req1.setSecretKey(cfg.sk);
-        req1.setKeyPair(cfg.kp);
-        req1.setMode(cfg.mode.getMode());
-        req1.setPadding(cfg.mode.getPadding());
-        stack.getWriter().write(req1);
+        // store
+        SecretKeyFile file1 = new SecretKeyFile();
+        file1.setFile(cfg.file);
+        file1.setInner(cfg.sk);
+        file1.setOuter(cfg.kp);
+        SecretKeyFileLS.store(file1);
 
-        // read
-        DataAccessRequest req2 = new DataAccessRequest();
-        req2.setFile(cfg.file);
-        req2.setKeyPair(cfg.kp);
-        stack.getReader().read(req2);
+        // load
+        SecretKeyFile file2 = new SecretKeyFile();
+        file2.setFile(cfg.file);
+        file2.setOuter(cfg.kp);
+        file2 = SecretKeyFileLS.load(file2);
 
-        // PropertyTable pt2 = req2.getPropertiesR();
-        SecretKey sk2 = decodeSK(req2);
-
-        this.checkSecretKey12(req1.getSecretKey(), sk2);
+        // check
+        SecretKey sk1 = file1.getInner();
+        SecretKey sk2 = file2.getInner();
+        this.checkSecretKey12(sk1, sk2);
     }
 
     private static SecretKey decodeSK(DataAccessRequest req) {
