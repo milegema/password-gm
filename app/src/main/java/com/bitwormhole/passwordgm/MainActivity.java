@@ -13,45 +13,42 @@ import com.bitwormhole.passwordgm.utils.Time;
 
 public class MainActivity extends PgmActivity {
 
-
-    private TextView mTextMockPassword;
+    private TextView[] mTextMockPassword;
     private MyAnimationDriver mAnimationDriver;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_main);
-        mTextMockPassword = findViewById(R.id.text_mock_password);
-        mTextMockPassword.setText("");
+        mTextMockPassword = this.findPasswordTextViews();
+        // mTextMockPassword.setText("");
+    }
+
+
+    private TextView[] findPasswordTextViews() {
+        TextView tv1 = findViewById(R.id.text_mock_password_c1);
+        TextView tv2 = findViewById(R.id.text_mock_password_c2);
+        TextView tv3 = findViewById(R.id.text_mock_password_c3);
+        TextView tv4 = findViewById(R.id.text_mock_password_c4);
+        TextView tv5 = findViewById(R.id.text_mock_password_c5);
+        TextView tv6 = findViewById(R.id.text_mock_password_c6);
+        return new TextView[]{tv1, tv2, tv3, tv4, tv5, tv6};
     }
 
 
     private class MyAnimationDriver implements Runnable {
         @Override
         public void run() {
-            char[] buffer = new char[6];
             for (int count = 0; isAlive(); count++) {
-                this.fill(buffer, count % 12);
-                this.updateUI(new String(buffer));
+                this.updateUI(count % 12);
                 Time.sleep(200);
             }
         }
 
-        void fill(char[] buffer, int count) {
-            final char c1 = '●';
-            final char c2 = ' ';
-            for (int i = 0; i < buffer.length; i++) {
-                buffer[i] = (i < count) ? c1 : c2;
-            }
-        }
 
-        void updateUI(final String text) {
-            if (text == null) {
-                return;
-            }
+        void updateUI(final int char_count) {
             MainActivity.this.runOnUiThread(() -> {
-                mTextMockPassword.setText(text);
+                updateMockPasswordDisplay(char_count);
             });
         }
 
@@ -66,6 +63,13 @@ public class MainActivity extends PgmActivity {
         }
     }
 
+    private void updateMockPasswordDisplay(int char_count) {
+        TextView[] all = this.mTextMockPassword;
+        for (int i = 0; i < all.length; ++i) {
+            TextView tv = all[i];
+            tv.setVisibility((i < char_count) ? TextView.VISIBLE : TextView.INVISIBLE);
+        }
+    }
 
     @Override
     protected void onStart() {

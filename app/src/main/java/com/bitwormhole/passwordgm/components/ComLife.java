@@ -3,7 +3,7 @@ package com.bitwormhole.passwordgm.components;
 public class ComLife {
 
 
-    private int order;
+    private int order; // 先后顺序:从小到大
     private OnCreate onCreate;
     private OnStart onStart;
     private Loop loop;

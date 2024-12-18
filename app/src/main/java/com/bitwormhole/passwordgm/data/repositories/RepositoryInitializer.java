@@ -19,14 +19,14 @@ import java.util.List;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
-final class RepositoryInit {
+final class RepositoryInitializer {
 
     private KeyPair keyPair;
     private SecretKey secretKey;
     private String email;
     private String url;
 
-    public RepositoryInit() {
+    public RepositoryInitializer() {
     }
 
     public KeyPair getKeyPair() {
@@ -61,7 +61,9 @@ final class RepositoryInit {
         this.url = url;
     }
 
-    public void init(RepositoryLayout layout) throws NoSuchAlgorithmException, IOException {
+    public void initial(RepositoryContext ctx) throws NoSuchAlgorithmException, IOException {
+
+        RepositoryLayout layout = ctx.getLayout();
 
         // prepare
         List<Path> file_list = new ArrayList<>();

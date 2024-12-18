@@ -65,7 +65,7 @@ final class RepositoryManagerImpl extends RepositoryManager {
 
         @Override
         public Repository create() {
-            Repository repo = RepositoryFactory.init(this.mParams);
+            Repository repo = RepositoryFactory.create(this.mParams);
             mCached = repo;
             return repo;
         }

@@ -9,6 +9,13 @@ public class PGMException extends RuntimeException {
         this.code = _code;
     }
 
+
+    public PGMException(String msg) {
+        super(msg);
+        this.code = PGMErrorCode.Unknown;
+    }
+
+
     public PGMException(PGMErrorCode _code, Throwable e) {
         super(e);
         this.code = _code;
