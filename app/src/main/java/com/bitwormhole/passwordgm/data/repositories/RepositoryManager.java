@@ -2,6 +2,8 @@ package com.bitwormhole.passwordgm.data.repositories;
 
 import android.content.Context;
 
+import java.security.KeyPair;
+
 public abstract class RepositoryManager {
 
     private static RepositoryManager _inst;
@@ -15,6 +17,8 @@ public abstract class RepositoryManager {
         return rm;
     }
 
-    public abstract RepositoryHolder get(RepositoryParams params);
+    public abstract RepositoryHolder get(KeyPair kp);
+
+    public abstract RepositoryHolder getRoot();
 
 }

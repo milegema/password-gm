@@ -11,7 +11,7 @@ public class RepositoryParams {
     private RepositoryAlias alias;
     private Path location;
     private KeyPair keyPair;
-    private ContextScope scope;
+    //  private ContextScope scope;
 
 
     public RepositoryParams() {
@@ -24,7 +24,7 @@ public class RepositoryParams {
         this.alias = src.alias;
         this.keyPair = src.keyPair;
         this.location = src.location;
-        this.scope = src.scope;
+        //  this.scope = src.scope;
     }
 
 
@@ -34,14 +34,6 @@ public class RepositoryParams {
 
     public void setAlias(RepositoryAlias alias) {
         this.alias = alias;
-    }
-
-    public ContextScope getScope() {
-        return scope;
-    }
-
-    public void setScope(ContextScope scope) {
-        this.scope = scope;
     }
 
     public KeyPair getKeyPair() {

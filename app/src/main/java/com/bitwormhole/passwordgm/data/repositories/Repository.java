@@ -12,8 +12,6 @@ public abstract class Repository {
 
     public abstract Path location();
 
-    public abstract ContextScope scope();
-
     public abstract RepositorySecretKey key();
 
 }

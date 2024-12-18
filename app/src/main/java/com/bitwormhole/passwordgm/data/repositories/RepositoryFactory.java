@@ -21,7 +21,6 @@ public class RepositoryFactory {
         ctx.setRepository(new RepositoryImpl(ctx));
         ctx.setLayout(layout);
         ctx.setKeyPair(params.getKeyPair());
-        ctx.setScope(params.getScope());
         ctx.setSecretKey(null);
 
         return ctx.getRepository();

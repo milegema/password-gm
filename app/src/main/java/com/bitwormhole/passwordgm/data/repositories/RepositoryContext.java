@@ -1,7 +1,5 @@
 package com.bitwormhole.passwordgm.data.repositories;
 
-import com.bitwormhole.passwordgm.contexts.ContextScope;
-
 import java.security.KeyPair;
 
 import javax.crypto.SecretKey;
@@ -10,7 +8,7 @@ public class RepositoryContext {
 
     private SecretKey secretKey;
     private KeyPair keyPair;
-    private ContextScope scope;
+
 
     private RepositoryLayout layout;
     private Repository repository;
@@ -26,13 +24,6 @@ public class RepositoryContext {
         this.repository = repository;
     }
 
-    public ContextScope getScope() {
-        return scope;
-    }
-
-    public void setScope(ContextScope scope) {
-        this.scope = scope;
-    }
 
     public KeyPair getKeyPair() {
         return keyPair;

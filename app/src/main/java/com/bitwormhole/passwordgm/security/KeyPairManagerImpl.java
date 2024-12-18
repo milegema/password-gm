@@ -4,6 +4,7 @@ import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 
 import com.bitwormhole.passwordgm.data.ids.KeyAlias;
+import com.bitwormhole.passwordgm.data.ids.UserAlias;
 import com.bitwormhole.passwordgm.utils.Errors;
 import com.bitwormhole.passwordgm.utils.HashUtils;
 
@@ -30,6 +31,17 @@ public class KeyPairManagerImpl implements KeyPairManager {
     @Override
     public KeyPairHolder get(KeyAlias alias) {
         return new MyKeyHolder(alias);
+    }
+
+    @Override
+    public KeyPairHolder get(UserAlias alias) {
+        KeyAlias ka = KeySelector.alias(alias);
+        return this.get(ka);
+    }
+
+    @Override
+    public KeyPairHolder getRoot() {
+        return this.get(new KeyAlias("root"));
     }
 
     @Override

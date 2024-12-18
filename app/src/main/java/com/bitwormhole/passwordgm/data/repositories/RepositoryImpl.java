@@ -18,11 +18,6 @@ public class RepositoryImpl extends Repository {
     }
 
     @Override
-    public ContextScope scope() {
-        return this.context.getScope();
-    }
-
-    @Override
     public RepositorySecretKey key() {
         return null; //   this.context. ;
     }

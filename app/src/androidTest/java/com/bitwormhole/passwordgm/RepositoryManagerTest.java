@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.nio.file.Path;
+import java.security.KeyPair;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -37,13 +38,11 @@ public class RepositoryManagerTest {
         if (!kp_holder.exists()) {
             kp_holder.create();
         }
+        KeyPair kp = kp_holder.fetch();
 
         // repo
         RepositoryManager rm = RepositoryManager.getInstance(ctx);
-        RepositoryParams params = new RepositoryParams();
-        params.setKeyPair(kp_holder.fetch());
-        params.setScope(ContextScope.TEST);
-        RepositoryHolder holder = rm.get(params);
+        RepositoryHolder holder = rm.get(kp);
         Repository repo;
 
         if (holder.exists()) {
@@ -55,5 +54,21 @@ public class RepositoryManagerTest {
         Path location = repo.location();
         Logs.info("repo.location = " + location);
 
+    }
+
+    @Test
+    public void useRepositoryManagerGetRoot() {
+
+        Context ctx = ApplicationProvider.getApplicationContext();
+        RepositoryManager rm = RepositoryManager.getInstance(ctx);
+        RepositoryHolder holder = rm.getRoot();
+        Repository repo = null;
+        if (!holder.exists()) {
+            repo = holder.create();
+        } else {
+            repo = holder.fetch();
+        }
+
+        repo.location();
     }
 }
