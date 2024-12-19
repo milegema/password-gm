@@ -1,6 +1,7 @@
 package com.bitwormhole.passwordgm.utils;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 public final class FileUtils {
@@ -32,5 +33,17 @@ public final class FileUtils {
 
     public static void writeText(String text, Path file, FileOptions flags) throws IOException {
         impl.writeText(text, file, flags);
+    }
+
+
+    public static void mkdirs(Path dir) throws IOException {
+        if (Files.exists(dir)) {
+            return;
+        }
+        Files.createDirectories(dir);
+    }
+
+    public static void mkdirsForFile(Path file) throws IOException {
+        mkdirs(file.getParent());
     }
 }

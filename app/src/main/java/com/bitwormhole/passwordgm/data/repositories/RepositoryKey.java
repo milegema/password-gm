@@ -2,7 +2,11 @@ package com.bitwormhole.passwordgm.data.repositories;
 
 import javax.crypto.SecretKey;
 
-public interface RepositorySecretKey {
+
+/**
+ * the SecretKey Manager for Repository
+ * */
+public interface RepositoryKey {
 
     boolean create();
 

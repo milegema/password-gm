@@ -1,4 +1,4 @@
-package com.bitwormhole.passwordgm.encoding.blocks;
+package com.bitwormhole.passwordgm.data.ids;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

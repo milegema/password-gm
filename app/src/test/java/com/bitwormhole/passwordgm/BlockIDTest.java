@@ -1,6 +1,6 @@
 package com.bitwormhole.passwordgm;
 
-import com.bitwormhole.passwordgm.encoding.blocks.BlockID;
+import com.bitwormhole.passwordgm.data.ids.BlockID;
 import com.bitwormhole.passwordgm.security.SecurityRandom;
 
 import org.junit.Assert;

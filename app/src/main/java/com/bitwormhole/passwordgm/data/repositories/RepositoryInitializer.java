@@ -21,136 +21,93 @@ import javax.crypto.SecretKey;
 
 final class RepositoryInitializer {
 
-    private KeyPair keyPair;
-    private SecretKey secretKey;
-    private String email;
-    private String url;
+    public KeyPair keyPair;
+    public SecretKey secretKey;
+    public String email;
+    public String url;
 
     public RepositoryInitializer() {
     }
 
-    public KeyPair getKeyPair() {
-        return keyPair;
-    }
+    private static class MyFileAndFolderMaker {
 
-    public void setKeyPair(KeyPair keyPair) {
-        this.keyPair = keyPair;
-    }
-
-    public SecretKey getSecretKey() {
-        return secretKey;
-    }
-
-    public void setSecretKey(SecretKey secretKey) {
-        this.secretKey = secretKey;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public void initial(RepositoryContext ctx) throws NoSuchAlgorithmException, IOException {
-
-        RepositoryLayout layout = ctx.getLayout();
-
-        // prepare
-        List<Path> file_list = new ArrayList<>();
-        List<Path> dir_list = new ArrayList<>();
-
-        file_list.add(layout.getKey());
-        file_list.add(layout.getConfig());
-        file_list.add(layout.getReadme());
-
-        dir_list.add(layout.getRepository());
-        dir_list.add(layout.getRefs());
-        dir_list.add(layout.getObjects());
-        dir_list.add(layout.getTables());
-
-        // check
-        this.checkItemNotExists(dir_list);
-        this.checkItemNotExists(file_list);
-
-        // create folders & files
-        this.createFolders(dir_list);
-        this.createFiles(file_list);
-        this.generateSecretKey(layout);
-        this.createConfigFile(layout);
-    }
-
-    private void generateSecretKey(RepositoryLayout layout) throws NoSuchAlgorithmException, IOException {
-        SecretKey key = this.secretKey;
-        if (key == null) {
-            String algorithm = "AES";
-            int size = 256;
-            KeyGenerator kg = KeyGenerator.getInstance(algorithm);
-            kg.init(size);
-            key = kg.generateKey();
-            this.secretKey = key;
+        private static void checkItemNotExists(List<Path> list) {
+            for (Path item : list) {
+                if (Files.exists(item)) {
+                    String msg = "the location of new repository is not empty";
+                    throw new PGMException(msg);
+                }
+            }
         }
 
-        SecretKeyFile file = new SecretKeyFile();
-        file.setFile(layout.getKey());
-        file.setInner(key);
-        file.setOuter(this.keyPair);
+        private static void createFolders(List<Path> list) {
+            try {
+                for (Path dir : list) {
+                    Files.createDirectories(dir);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
-        SecretKeyFileLS.store(file);
+        private static void createFiles(List<Path> list) {
+            try {
+                for (Path file : list) {
+                    Files.createFile(file);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        static void init_files_and_dirs(RepositoryContext ctx) throws NoSuchAlgorithmException, IOException {
+
+            RepositoryLayout layout = ctx.getLayout();
+
+            // prepare
+            List<Path> file_list = new ArrayList<>();
+            List<Path> dir_list = new ArrayList<>();
+
+            file_list.add(layout.getKey());
+            file_list.add(layout.getConfig());
+            file_list.add(layout.getReadme());
+
+            dir_list.add(layout.getRepository());
+            dir_list.add(layout.getRefs());
+            dir_list.add(layout.getObjects());
+            dir_list.add(layout.getTables());
+
+            // check
+            checkItemNotExists(dir_list);
+            checkItemNotExists(file_list);
+
+            // create folders & files
+            createFolders(dir_list);
+            createFiles(file_list);
+        }
     }
 
-    private void createConfigFile(RepositoryLayout layout) throws IOException {
 
-        SecretDataFile file = new SecretDataFile();
-        file.setFile(layout.getConfig());
-        file.setKey(this.secretKey);
+    public void initial(RepositoryContext ctx) throws NoSuchAlgorithmException, IOException {
+        MyFileAndFolderMaker.init_files_and_dirs(ctx);
+        this.generateSecretKey(ctx);
+        this.createConfigFile(ctx);
+    }
 
+    private void generateSecretKey(RepositoryContext ctx) throws NoSuchAlgorithmException, IOException {
+        RepositoryKey skm = ctx.getSecretKeyManager();
+        skm.create();
+    }
+
+    private void createConfigFile(RepositoryContext ctx) throws IOException {
 
         PropertyTable pt = PropertyTable.Factory.create();
         pt.put("public-key.fingerprint", "todo...");
         pt.put("user.email", this.email);
         pt.put("service.url", this.url);
 
+        pt.put("core.block",  "refs/blocks/user/info" );
 
-        byte[] bin = PropertyTableLS.encode(pt);
-        file.write(bin);
-    }
-
-    private void checkItemNotExists(List<Path> list) {
-        for (Path item : list) {
-            if (Files.exists(item)) {
-                String msg = "the location of new repository is not empty";
-                throw new PGMException(PGMErrorCode.Unknown, msg);
-            }
-        }
-    }
-
-    private void createFolders(List<Path> list) {
-        try {
-            for (Path dir : list) {
-                Files.createDirectories(dir);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void createFiles(List<Path> list) {
-        try {
-            for (Path file : list) {
-                Files.createFile(file);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        ctx.getConfig().store(pt);
     }
 }

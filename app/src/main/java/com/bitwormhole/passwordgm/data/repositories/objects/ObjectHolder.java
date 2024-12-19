@@ -2,10 +2,11 @@ package com.bitwormhole.passwordgm.data.repositories.objects;
 
 import com.bitwormhole.passwordgm.data.ids.ObjectID;
 
-public interface ObjectManager {
+public interface ObjectHolder {
 
-    ObjectHolder get(ObjectID id);
+    ObjectID id();
 
-    ObjectWriter writer();
+    boolean exists();
 
+    ObjectReader reader();
 }

@@ -21,6 +21,8 @@ public interface PropertyTable {
 
     void clear();
 
+    int size();
+
     String[] names();
 
     Map<String, String> exportAll(Map<String, String> dst);

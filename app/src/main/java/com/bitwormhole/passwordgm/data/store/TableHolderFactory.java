@@ -172,6 +172,11 @@ class TableHolderFactory {
         }
 
         @Override
+        public int size() {
+            return this.holder.mPropertiesR.size();
+        }
+
+        @Override
         public String[] names() {
             return this.holder.mPropertiesR.names();
         }

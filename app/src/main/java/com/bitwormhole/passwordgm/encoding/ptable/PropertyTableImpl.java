@@ -39,6 +39,11 @@ class PropertyTableImpl implements PropertyTable {
     }
 
     @Override
+    public int size() {
+        return this.table.size();
+    }
+
+    @Override
     public String[] names() {
         Set<String> src = table.keySet();
         String[] dst = new String[0];

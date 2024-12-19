@@ -1,5 +1,6 @@
 package com.bitwormhole.passwordgm.encoding.blocks;
 
+import com.bitwormhole.passwordgm.data.ids.BlockID;
 import com.bitwormhole.passwordgm.encoding.ptable.PropertyTable;
 import com.bitwormhole.passwordgm.utils.ByteSlice;
 

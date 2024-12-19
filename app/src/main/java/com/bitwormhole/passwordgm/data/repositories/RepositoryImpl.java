@@ -1,8 +1,8 @@
 package com.bitwormhole.passwordgm.data.repositories;
 
-import com.bitwormhole.passwordgm.contexts.ContextScope;
 import com.bitwormhole.passwordgm.data.repositories.objects.ObjectManager;
 import com.bitwormhole.passwordgm.data.repositories.refs.RefManager;
+import com.bitwormhole.passwordgm.data.repositories.tables.RepoTableManager;
 
 import java.nio.file.Path;
 
@@ -20,8 +20,8 @@ public class RepositoryImpl extends Repository {
     }
 
     @Override
-    public RepositorySecretKey key() {
-        return this.context.getSecretKey2repo();
+    public RepositoryKey key() {
+        return this.context.getSecretKeyManager();
     }
 
     @Override
@@ -32,6 +32,11 @@ public class RepositoryImpl extends Repository {
     @Override
     public RefManager refs() {
         return this.context.getRefManager();
+    }
+
+    @Override
+    public RepoTableManager tables() {
+        return this.context.getTableManager();
     }
 
     @Override
