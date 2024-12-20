@@ -10,14 +10,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public final class RepoTableRW {
+public final class TableRW {
 
-    private final String name;
-    private final RepoTableReader reader;
-    private final RepoTableWriter writer;
+    private final TableName name;
+    private final TableReader reader;
+    private final TableWriter writer;
     private final Set<String> fields;
 
-    private RepoTableRW(Builder b) {
+    private TableRW(Builder b) {
         this.name = b.name;
         this.reader = b.reader;
         this.writer = b.writer;
@@ -26,23 +26,23 @@ public final class RepoTableRW {
 
     public static class Builder {
 
-        public String name;
-        public RepoTableReader reader;
-        public RepoTableWriter writer;
+        public TableName name;
+        public TableReader reader;
+        public TableWriter writer;
         public final Set<String> fields;
 
         public Builder() {
             this.fields = new HashSet<>();
         }
 
-        public RepoTableRW create() {
-            return new RepoTableRW(this);
+        public TableRW create() {
+            return new TableRW(this);
         }
     }
 
 
     private String keyForField(String field, String id) {
-        return this.name + '.' + id + '.' + field;
+        return String.valueOf(this.name) + '.' + id + '.' + field;
     }
 
 
@@ -51,7 +51,7 @@ public final class RepoTableRW {
         try {
             PropertyTable pt = this.reader.read();
             String[] all = pt.names();
-            final String prefix = this.name + '.';
+            final String prefix = this.name + ".";
             final String suffix = ".id";
             for (String key : all) {
                 if (key.startsWith(prefix) && key.endsWith(suffix)) {
@@ -92,7 +92,7 @@ public final class RepoTableRW {
         if (dst == null) {
             dst = new HashMap<>();
         }
-        dst.put("this.table", this.name);
+        dst.put("this.table", this.name + "");
         dst.put("id", id);
         try {
             PropertyTable src = this.reader.read();

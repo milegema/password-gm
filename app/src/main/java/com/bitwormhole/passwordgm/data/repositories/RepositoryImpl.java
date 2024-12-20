@@ -2,7 +2,7 @@ package com.bitwormhole.passwordgm.data.repositories;
 
 import com.bitwormhole.passwordgm.data.repositories.objects.ObjectManager;
 import com.bitwormhole.passwordgm.data.repositories.refs.RefManager;
-import com.bitwormhole.passwordgm.data.repositories.tables.RepoTableManager;
+import com.bitwormhole.passwordgm.data.repositories.tables.TableManager;
 
 import java.nio.file.Path;
 
@@ -35,7 +35,7 @@ public class RepositoryImpl extends Repository {
     }
 
     @Override
-    public RepoTableManager tables() {
+    public TableManager tables() {
         return this.context.getTableManager();
     }
 

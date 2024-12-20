@@ -3,7 +3,7 @@ package com.bitwormhole.passwordgm.data.repositories;
 import com.bitwormhole.passwordgm.data.ids.RepositoryAlias;
 import com.bitwormhole.passwordgm.data.repositories.objects.ObjectManager;
 import com.bitwormhole.passwordgm.data.repositories.refs.RefManager;
-import com.bitwormhole.passwordgm.data.repositories.tables.RepoTableManager;
+import com.bitwormhole.passwordgm.data.repositories.tables.TableManager;
 
 import java.nio.file.Path;
 import java.security.KeyPair;
@@ -28,7 +28,7 @@ public class RepositoryContext {
     private Repository repository;
     private ObjectManager objectManager;
     private RefManager refManager;
-    private RepoTableManager tableManager;
+    private TableManager tableManager;
     private RepositoryConfig config;
 
     public RepositoryContext() {
@@ -114,11 +114,11 @@ public class RepositoryContext {
         this.alias = alias;
     }
 
-    public RepoTableManager getTableManager() {
+    public TableManager getTableManager() {
         return tableManager;
     }
 
-    public void setTableManager(RepoTableManager tableManager) {
+    public void setTableManager(TableManager tableManager) {
         this.tableManager = tableManager;
     }
 }

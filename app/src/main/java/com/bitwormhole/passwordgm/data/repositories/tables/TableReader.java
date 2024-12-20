@@ -4,7 +4,7 @@ import com.bitwormhole.passwordgm.encoding.ptable.PropertyTable;
 
 import java.io.IOException;
 
-public interface RepoTableReader {
+public interface TableReader {
 
     PropertyTable read() throws IOException;
 

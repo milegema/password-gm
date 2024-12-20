@@ -3,7 +3,7 @@ package com.bitwormhole.passwordgm.data.repositories;
 import com.bitwormhole.passwordgm.data.ids.RepositoryAlias;
 import com.bitwormhole.passwordgm.data.repositories.objects.ObjectManagerImpl;
 import com.bitwormhole.passwordgm.data.repositories.refs.RefManagerImpl;
-import com.bitwormhole.passwordgm.data.repositories.tables.RepoTableManagerImpl;
+import com.bitwormhole.passwordgm.data.repositories.tables.TableManagerImpl;
 import com.bitwormhole.passwordgm.errors.PGMErrorCode;
 import com.bitwormhole.passwordgm.errors.PGMException;
 
@@ -126,7 +126,7 @@ public class RepositoryFactory {
             ctx.setConfig(new RepositoryConfigFile(ctx));
             ctx.setObjectManager(new ObjectManagerImpl(ctx));
             ctx.setRefManager(new RefManagerImpl(ctx));
-            ctx.setTableManager(new RepoTableManagerImpl(ctx));
+            ctx.setTableManager(new TableManagerImpl(ctx));
 
             ctx.setRepository(new RepositoryImpl(ctx));
 

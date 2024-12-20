@@ -2,7 +2,7 @@ package com.bitwormhole.passwordgm.data.repositories;
 
 import com.bitwormhole.passwordgm.data.repositories.objects.ObjectManager;
 import com.bitwormhole.passwordgm.data.repositories.refs.RefManager;
-import com.bitwormhole.passwordgm.data.repositories.tables.RepoTableManager;
+import com.bitwormhole.passwordgm.data.repositories.tables.TableManager;
 
 import java.nio.file.Path;
 
@@ -20,7 +20,7 @@ public abstract class Repository {
 
     public abstract RefManager refs();
 
-    public abstract RepoTableManager tables();
+    public abstract TableManager tables();
 
     public abstract ObjectManager objects();
 
