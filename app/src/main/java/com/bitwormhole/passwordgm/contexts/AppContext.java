@@ -1,6 +1,8 @@
 package com.bitwormhole.passwordgm.contexts;
 
 import com.bitwormhole.passwordgm.components.ComponentManager;
+import com.bitwormhole.passwordgm.data.blocks.AccountBlock;
+import com.bitwormhole.passwordgm.data.blocks.AppBlock;
 import com.bitwormhole.passwordgm.security.KeyPairManager;
 import com.bitwormhole.passwordgm.security.SecretKeyManager;
 import com.bitwormhole.passwordgm.utils.Attributes;
@@ -14,12 +16,28 @@ public class AppContext extends ContextBase {
     private Attributes attributes;
 
     private KeyPairManager keyPairManager;
-    private SecretKeyManager secretKeyManager;
+
+    private AppBlock block;
+
+
+    private boolean started;
+    private boolean starting;
+    private boolean stopped;
+    private boolean stopping;
+
 
     public AppContext(RootContext _parent) {
         super(_parent, ContextScope.APP);
         this.attributes = new Attributes();
         this.properties = new Properties();
+    }
+
+    public AppBlock getBlock() {
+        return block;
+    }
+
+    public void setBlock(AppBlock block) {
+        this.block = block;
     }
 
     public ComponentManager getComponents() {
@@ -30,20 +48,45 @@ public class AppContext extends ContextBase {
         this.components = components;
     }
 
-    public SecretKeyManager getSecretKeyManager() {
-        return secretKeyManager;
-    }
-
-    public void setSecretKeyManager(SecretKeyManager secretKeyManager) {
-        this.secretKeyManager = secretKeyManager;
-    }
-
     public KeyPairManager getKeyPairManager() {
         return keyPairManager;
     }
 
     public void setKeyPairManager(KeyPairManager keyPairManager) {
         this.keyPairManager = keyPairManager;
+    }
+
+
+    public boolean isStarted() {
+        return started;
+    }
+
+    public void setStarted(boolean started) {
+        this.started = started;
+    }
+
+    public boolean isStarting() {
+        return starting;
+    }
+
+    public void setStarting(boolean starting) {
+        this.starting = starting;
+    }
+
+    public boolean isStopped() {
+        return stopped;
+    }
+
+    public void setStopped(boolean stopped) {
+        this.stopped = stopped;
+    }
+
+    public boolean isStopping() {
+        return stopping;
+    }
+
+    public void setStopping(boolean stopping) {
+        this.stopping = stopping;
     }
 
     public Attributes getAttributes() {
@@ -53,6 +96,7 @@ public class AppContext extends ContextBase {
     public void setAttributes(Attributes attributes) {
         this.attributes = attributes;
     }
+
 
     public Properties getProperties() {
         return properties;

@@ -74,7 +74,8 @@ public final class BlockTypeSet {
                 BlockType.Root,
                 BlockType.User,
                 BlockType.Domain,
-                BlockType.Version,
+                BlockType.Scene,
+                BlockType.Passcode,
                 BlockType.Account,
 
                 BlockType.FooBar,

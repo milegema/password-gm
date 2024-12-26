@@ -1,5 +1,7 @@
 package com.bitwormhole.passwordgm.components;
 
+import com.bitwormhole.passwordgm.boot.BootOrder;
+
 public class ComLife {
 
 
@@ -54,6 +56,10 @@ public class ComLife {
 
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    public void setOrder(BootOrder order) {
+        this.order = order.ordinal();
     }
 
     public OnCreate getOnCreate() {

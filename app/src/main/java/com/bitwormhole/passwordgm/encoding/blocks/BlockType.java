@@ -12,10 +12,12 @@ public enum BlockType {
 
 
     Root,
+    App,
     User,
     Domain,
     Account,
-    Version,
+    Scene,
+    Passcode,
 
     FooBar,
 

@@ -1,15 +1,21 @@
 package com.bitwormhole.passwordgm;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
 import com.bitwormhole.passwordgm.boot.Bootstrap;
+import com.bitwormhole.passwordgm.contexts.ContextHolder;
+import com.bitwormhole.passwordgm.contexts.UserContext;
 import com.bitwormhole.passwordgm.tasks.Promise;
 import com.bitwormhole.passwordgm.tasks.Result;
 import com.bitwormhole.passwordgm.utils.Errors;
 import com.bitwormhole.passwordgm.utils.Time;
+
+import javax.crypto.SecretKey;
 
 public class MainActivity extends PgmActivity {
 
@@ -25,16 +31,35 @@ public class MainActivity extends PgmActivity {
     }
 
 
-    private TextView[] findPasswordTextViews() {
-        TextView tv1 = findViewById(R.id.text_mock_password_c1);
-        TextView tv2 = findViewById(R.id.text_mock_password_c2);
-        TextView tv3 = findViewById(R.id.text_mock_password_c3);
-        TextView tv4 = findViewById(R.id.text_mock_password_c4);
-        TextView tv5 = findViewById(R.id.text_mock_password_c5);
-        TextView tv6 = findViewById(R.id.text_mock_password_c6);
-        return new TextView[]{tv1, tv2, tv3, tv4, tv5, tv6};
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Promise.init(this, ContextHolder.class).Try(() -> {
+            ContextHolder ch = Bootstrap.boot(this);
+            return new Result<>(ch);
+        }).Then((res) -> {
+            handleContextHolder(res.getValue());
+            return res;
+        }).Catch((res) -> {
+            int flags = Errors.LOG | Errors.ALERT;
+            Errors.handle(this, res.getError(), flags);
+            return res;
+        }).start();
+
+
+        MyAnimationDriver ad = new MyAnimationDriver();
+        mAnimationDriver = ad;
+        ad.start();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mAnimationDriver = null;
+    }
+
+
+    // private
 
     private class MyAnimationDriver implements Runnable {
         @Override
@@ -63,6 +88,36 @@ public class MainActivity extends PgmActivity {
         }
     }
 
+
+    private boolean isUserContextReady(ContextHolder ch) {
+        if (ch == null) {
+            return false;
+        }
+        UserContext uc = ch.getUser();
+        if (uc == null) {
+            return false;
+        }
+        SecretKey sk = uc.getSecretKey();
+        if (sk == null) {
+            return false;
+        }
+        return true;
+    }
+
+    private void handleContextHolder(ContextHolder ch) {
+        if (isUserContextReady(ch)) {
+            this.startActivity(UnlockActivity.class);
+            return;
+        }
+        this.startActivity(LoginActivity.class);
+    }
+
+
+    private void startActivity(Class<? extends Activity> at) {
+        Intent i = new Intent(this, at);
+        this.startActivity(i);
+    }
+
     private void updateMockPasswordDisplay(int char_count) {
         TextView[] all = this.mTextMockPassword;
         for (int i = 0; i < all.length; ++i) {
@@ -71,32 +126,13 @@ public class MainActivity extends PgmActivity {
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Promise.init(this, Long.class).Try(() -> {
-
-            Bootstrap.boot(this);
-
-            return new Result<>(Long.getLong("000"));
-        }).Then((res) -> {
-
-            return res;
-        }).Catch((res) -> {
-            int flags = Errors.LOG | Errors.ALERT;
-            Errors.handle(this, res.getError(), flags);
-            return res;
-        }).start();
-
-
-        MyAnimationDriver ad = new MyAnimationDriver();
-        mAnimationDriver = ad;
-        ad.start();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        mAnimationDriver = null;
+    private TextView[] findPasswordTextViews() {
+        TextView tv1 = findViewById(R.id.text_mock_password_c1);
+        TextView tv2 = findViewById(R.id.text_mock_password_c2);
+        TextView tv3 = findViewById(R.id.text_mock_password_c3);
+        TextView tv4 = findViewById(R.id.text_mock_password_c4);
+        TextView tv5 = findViewById(R.id.text_mock_password_c5);
+        TextView tv6 = findViewById(R.id.text_mock_password_c6);
+        return new TextView[]{tv1, tv2, tv3, tv4, tv5, tv6};
     }
 }

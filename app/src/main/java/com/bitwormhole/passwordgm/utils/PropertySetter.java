@@ -1,5 +1,9 @@
 package com.bitwormhole.passwordgm.utils;
 
+import com.bitwormhole.passwordgm.data.ids.BlockID;
+import com.bitwormhole.passwordgm.data.ids.BlockIDWrapper;
+import com.bitwormhole.passwordgm.data.repositories.refs.RefName;
+import com.bitwormhole.passwordgm.encoding.blocks.BlockType;
 import com.bitwormhole.passwordgm.encoding.ptable.PropertyTable;
 import com.bitwormhole.passwordgm.security.CipherMode;
 import com.bitwormhole.passwordgm.security.PaddingMode;
@@ -65,10 +69,38 @@ public class PropertySetter {
         innerSet(name, "base64:" + b64);
     }
 
+    public void put(String name, RefName value) {
+        innerSet(name, String.valueOf(value));
+    }
+
 
     public void put(String name, int value) {
         innerSet(name, String.valueOf(value));
     }
+
+    public void put(String name, long value) {
+        innerSet(name, String.valueOf(value));
+    }
+
+    public void put(String name, short value) {
+        innerSet(name, String.valueOf(value));
+    }
+
+    public void put(String name, BlockID value) {
+        innerSet(name, String.valueOf(value));
+    }
+
+    public void put(String name, BlockIDWrapper value) {
+        if (name == null || value == null) {
+            return;
+        }
+        innerSet(name, String.valueOf(value));
+    }
+
+    public void put(String name, BlockType value) {
+        innerSet(name, String.valueOf(value));
+    }
+
 
     public void put(String name, boolean value) {
         innerSet(name, String.valueOf(value));

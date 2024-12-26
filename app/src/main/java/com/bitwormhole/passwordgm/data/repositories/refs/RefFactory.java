@@ -4,9 +4,11 @@ import com.bitwormhole.passwordgm.data.access.DataAccessMode;
 import com.bitwormhole.passwordgm.data.ids.BlockID;
 import com.bitwormhole.passwordgm.data.ids.ObjectID;
 import com.bitwormhole.passwordgm.encoding.secretdatafile.SecretTextFile;
+import com.bitwormhole.passwordgm.utils.FileUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class RefFactory {
 
@@ -45,6 +47,16 @@ public class RefFactory {
         @Override
         public boolean exists() {
             return Files.exists(context.getPath());
+        }
+
+        @Override
+        public ObjectID read() throws IOException {
+            return this.context.getFile().read();
+        }
+
+        @Override
+        public void write(ObjectID id) throws IOException {
+            this.context.getFile().write(id);
         }
     }
 
@@ -123,6 +135,37 @@ public class RefFactory {
         @Override
         public boolean exists() {
             return context.getHolder().exists();
+        }
+
+        @Override
+        public ObjectID read() throws IOException {
+            Path p = this.context.getPath();
+            if (!Files.isRegularFile(p)) {
+                return null;
+            }
+            SecretTextFile file = new SecretTextFile();
+            file.setKey(this.context.getKey());
+            file.setFile(p);
+            String str = file.load().trim();
+            if (str.isEmpty()) {
+                return null;
+            }
+            BlockID block_id = new BlockID(str);
+            return ObjectID.convert(block_id);
+        }
+
+        @Override
+        public void write(ObjectID id) throws IOException {
+
+            String str = id.toString();
+            Path p = this.context.getPath();
+            FileUtils.mkdirsForFile(p);
+
+            SecretTextFile file = new SecretTextFile();
+            file.setKey(this.context.getKey());
+            file.setDam(DataAccessMode.REWRITE);
+            file.setFile(p);
+            file.save(str);
         }
     }
 

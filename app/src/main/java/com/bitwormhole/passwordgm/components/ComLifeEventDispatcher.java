@@ -2,6 +2,8 @@ package com.bitwormhole.passwordgm.components;
 
 import com.bitwormhole.passwordgm.utils.Logs;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class ComLifeEventDispatcher implements ComLifecycle {
@@ -15,6 +17,11 @@ public class ComLifeEventDispatcher implements ComLifecycle {
 
     private void forEachLife(boolean reverse, ComLife.Handler h) throws Exception {
         List<ComLife> all = context.lives;
+        all.sort((o1, o2) -> {
+            int n1 = o1.getOrder();
+            int n2 = o2.getOrder();
+            return n1 - n2;
+        });
         if (!reverse) {
             for (ComLife life : all) {
                 h.handle(life);

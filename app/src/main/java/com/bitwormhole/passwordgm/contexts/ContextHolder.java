@@ -11,6 +11,8 @@ public class ContextHolder {
     private UserContext user;
     private DomainContext domain;
     private AccountContext account;
+    private SceneContext scene;
+    private PasswordContext password;
 
     public ContextHolder() {
     }
@@ -61,5 +63,22 @@ public class ContextHolder {
 
     public void setAndroid(Context android) {
         this.android = android;
+    }
+
+
+    public SceneContext getScene() {
+        return scene;
+    }
+
+    public void setScene(SceneContext scene) {
+        this.scene = scene;
+    }
+
+    public PasswordContext getPassword() {
+        return password;
+    }
+
+    public void setPassword(PasswordContext password) {
+        this.password = password;
     }
 }

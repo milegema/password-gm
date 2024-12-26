@@ -2,6 +2,8 @@ package com.bitwormhole.passwordgm.utils;
 
 import android.util.NoSuchPropertyException;
 
+import com.bitwormhole.passwordgm.data.ids.BlockID;
+import com.bitwormhole.passwordgm.data.repositories.refs.RefName;
 import com.bitwormhole.passwordgm.encoding.blocks.BlockType;
 import com.bitwormhole.passwordgm.encoding.ptable.PropertyTable;
 import com.bitwormhole.passwordgm.security.CipherMode;
@@ -70,6 +72,26 @@ public class PropertyGetter {
         return def;
     }
 
+    public long getLong(String name, long def) {
+        String str = innerGet(name);
+        try {
+            return Long.parseLong(str);
+        } catch (Exception e) {
+            Errors.handle(null, e);
+        }
+        return def;
+    }
+
+    public short getShort(String name, short def) {
+        String str = innerGet(name);
+        try {
+            return Short.parseShort(str);
+        } catch (Exception e) {
+            Errors.handle(null, e);
+        }
+        return def;
+    }
+
 
     public byte[] getDataHex(String name, byte[] def) {
         String str = innerGet(name);
@@ -124,6 +146,39 @@ public class PropertyGetter {
         String str = innerGet(name);
         try {
             return BlockType.valueOf(str);
+        } catch (Exception e) {
+            Errors.handle(null, e);
+        }
+        return def;
+    }
+
+    public BlockID getBlockID(String name, BlockID def) {
+        String str = innerGet(name);
+        if (str == null) {
+            return def;
+        }
+        if (str.isEmpty()) {
+            return def;
+        }
+        try {
+            return new BlockID(str);
+        } catch (Exception e) {
+            Errors.handle(null, e);
+        }
+        return def;
+    }
+
+
+    public RefName getRefName(String name, RefName def) {
+        String str = innerGet(name);
+        if (str == null) {
+            return def;
+        }
+        if (str.isEmpty()) {
+            return def;
+        }
+        try {
+            return new RefName(str);
         } catch (Exception e) {
             Errors.handle(null, e);
         }

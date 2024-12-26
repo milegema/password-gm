@@ -2,7 +2,8 @@ package com.bitwormhole.passwordgm.boot;
 
 import android.content.Context;
 
-import com.bitwormhole.passwordgm.PasswordGMApp;
+import com.bitwormhole.passwordgm.PgmAppInterface;
+import com.bitwormhole.passwordgm.PgmApplication;
 import com.bitwormhole.passwordgm.components.ComLife;
 import com.bitwormhole.passwordgm.components.ComLifeContext;
 import com.bitwormhole.passwordgm.components.ComLifeManager;
@@ -12,47 +13,47 @@ import com.bitwormhole.passwordgm.contexts.AppContext;
 import com.bitwormhole.passwordgm.contexts.ContextFactory;
 import com.bitwormhole.passwordgm.contexts.ContextHolder;
 import com.bitwormhole.passwordgm.contexts.RootContext;
-import com.bitwormhole.passwordgm.contexts.UserContext;
 
 public final class Bootstrap {
 
     private Bootstrap() {
     }
 
-    public static void boot(Context ctx) {
+    public static ContextHolder boot(Context ctx) {
+        PgmAppInterface app = (PgmAppInterface) ctx.getApplicationContext();
+        ContextHolder ch = app.getContexts();
+        try {
+            Bootstrap b = new Bootstrap();
+            b.doInit(ch);
+            b.doCreateComponents(ch);
+            b.doStartComponents(ch);
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            throw new RuntimeException(e);
+        }
+        return ch;
+    }
 
-        Bootstrap b = new Bootstrap();
-        PasswordGMApp app = (PasswordGMApp) ctx.getApplicationContext();
-        ContextHolder contexts = app.getContexts();
+    private void doInit(ContextHolder ch) {
 
-        b.initRoot(contexts);
+        RootContext root = ch.getRoot();
+        AppContext app = ch.getApp();
+        PgmApplication pgm_app = (PgmApplication) ch.getAndroid().getApplicationContext();
 
-        b.initApp(contexts);
-        b.doCreateComponents(contexts);
-        b.doStartComponents(contexts);
+        if (root == null) {
+            root = ContextFactory.createRootContext(ch);
+            ch.setRoot(root);
+        }
+        if (app == null) {
+            app = ContextFactory.createAppContext(ch);
+            ch.setApp(app);
+        }
 
-        b.initUser(contexts);
+        root.setContextCustomizer(pgm_app);
     }
 
     // private methods
 
-    private void initRoot(ContextHolder holder) {
-        RootContext root = holder.getRoot();
-        if (root != null) {
-            return;
-        }
-        root = ContextFactory.createRootContext(holder);
-        holder.setRoot(root);
-    }
-
-    private void initApp(ContextHolder holder) {
-        AppContext ac = holder.getApp();
-        if (ac != null) {
-            return;
-        }
-        ac = ContextFactory.createAppContext(holder);
-        holder.setApp(ac);
-    }
 
     private void doCreateComponents(ContextHolder holder) {
         holder.getRoot().getContextCustomizer().customize(holder);
@@ -63,20 +64,15 @@ public final class Bootstrap {
         ComLifeContext ctx = new ComLifeContext();
         ComLifeScanner.scan(ctx, holder);
         ComLifeManager clm = new ComLifeManager(ctx);
-        ComLife life = clm.getMain();
-        ComLifeRunner runner = new ComLifeRunner(ctx, life);
 
+        ComLife life1 = clm.getMain();
+        ComLife life2 = new ComLife(life1);
+        // life2.setLoop(null);
+        // life2.setOnStop(null);
+        // life2.setOnDestroy(null);
+
+        ComLifeRunner runner = new ComLifeRunner(ctx, life2);
         runner.start();
-        runner.waitUtilStarted(15 * 1000);
-    }
-
-
-    private void initUser(ContextHolder holder) {
-        UserContext uc = holder.getUser();
-        if (uc != null) {
-            return;
-        }
-        uc = ContextFactory.createUserContext("todo:name", holder);
-        holder.setUser(uc);
+        runner.waitUtilStarted(30 * 1000);
     }
 }

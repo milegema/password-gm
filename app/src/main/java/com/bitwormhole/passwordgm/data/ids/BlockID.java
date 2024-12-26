@@ -26,6 +26,15 @@ public final class BlockID {
     }
 
 
+    public BlockID(BlockID src) {
+        if (src == null) {
+            this.sum = new SHA256SUM();
+        } else {
+            this.sum = src.sum;
+        }
+    }
+
+
     private final static int LENGTH_IN_BIT = 256;
     private final static int LENGTH_IN_BYTE = LENGTH_IN_BIT / 8;
     private final static int LENGTH_IN_CHAR = LENGTH_IN_BYTE * 2;

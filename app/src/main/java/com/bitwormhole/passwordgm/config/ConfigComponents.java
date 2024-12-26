@@ -1,7 +1,10 @@
 package com.bitwormhole.passwordgm.config;
 
-import com.bitwormhole.passwordgm.boot.AutoAppKeyLoader;
-import com.bitwormhole.passwordgm.boot.AutoUserKeyLoader;
+import android.content.Context;
+
+import com.bitwormhole.passwordgm.boot.AutoAppContextLoader;
+import com.bitwormhole.passwordgm.boot.AutoRootContextLoader;
+import com.bitwormhole.passwordgm.boot.AutoUserContextLoader;
 import com.bitwormhole.passwordgm.boot.ComContextAgent;
 import com.bitwormhole.passwordgm.components.ComponentManager;
 import com.bitwormhole.passwordgm.components.ComponentSetBuilder;
@@ -9,6 +12,7 @@ import com.bitwormhole.passwordgm.components.ComponentSet;
 import com.bitwormhole.passwordgm.contexts.ContextAgent;
 import com.bitwormhole.passwordgm.contexts.ContextCustomizer;
 import com.bitwormhole.passwordgm.contexts.ContextHolder;
+import com.bitwormhole.passwordgm.data.repositories.RepositoryManager;
 import com.bitwormhole.passwordgm.security.KeyPairManager;
 import com.bitwormhole.passwordgm.security.KeyPairManagerImpl;
 import com.bitwormhole.passwordgm.security.SecretKeyManager;
@@ -23,18 +27,22 @@ public class ConfigComponents implements ContextCustomizer {
     private static class All {
 
         KeyPairManagerImpl keyPairManager;
-        SecretKeyManagerImpl secretKeyManager;
-        AutoAppKeyLoader appKeyLoader;
-        AutoUserKeyLoader userKeyLoader;
+        AutoRootContextLoader rootContextLoader;
+        RepositoryManager repositoryManager;
+
+        AutoAppContextLoader appContextLoader;
+        AutoUserContextLoader userContextLoader;
         ComContextAgent contextAgent;
 
 
-        public All() {
-            this.keyPairManager = new KeyPairManagerImpl();
-            this.secretKeyManager = new SecretKeyManagerImpl();
-            this.appKeyLoader = new AutoAppKeyLoader();
-            this.userKeyLoader = new AutoUserKeyLoader();
+        public All(Context ctx) {
             this.contextAgent = new ComContextAgent();
+            this.keyPairManager = new KeyPairManagerImpl();
+            this.repositoryManager = RepositoryManager.getInstance(ctx);
+
+            this.rootContextLoader = new AutoRootContextLoader();
+            this.appContextLoader = new AutoAppContextLoader();
+            this.userContextLoader = new AutoUserContextLoader();
         }
     }
 
@@ -45,9 +53,11 @@ public class ConfigComponents implements ContextCustomizer {
 
         builder.addComponent(all.contextAgent).addAlias(ContextAgent.class);
         builder.addComponent(all.keyPairManager).addAlias(KeyPairManager.class);
-        builder.addComponent(all.secretKeyManager).addAlias(SecretKeyManager.class);
-        builder.addComponent(all.appKeyLoader);
-        builder.addComponent(all.userKeyLoader);
+        builder.addComponent(all.repositoryManager).addAlias(RepositoryManager.class);
+
+        builder.addComponent(all.rootContextLoader);
+        builder.addComponent(all.appContextLoader);
+        builder.addComponent(all.userContextLoader);
 
         final ComponentSet cs = builder.create();
         ch.getApp().setComponents(cs);
@@ -57,13 +67,16 @@ public class ConfigComponents implements ContextCustomizer {
 
         ComponentManager cm = ch.getApp().getComponents();
         KeyPairManagerImpl kpm = cm.find(KeyPairManagerImpl.class);
-        SecretKeyManagerImpl skm = cm.find(SecretKeyManagerImpl.class);
+
 
         Logs.debug("kpm = " + kpm);
-        Logs.debug("skm = " + skm);
 
 
         wire(ch, all, all.contextAgent);
+        wire(ch, all, all.appContextLoader);
+        wire(ch, all, all.rootContextLoader);
+        wire(ch, all, all.userContextLoader);
+
     }
 
 
@@ -72,9 +85,29 @@ public class ConfigComponents implements ContextCustomizer {
     }
 
 
+    private void wire(ContextHolder ch, All all, AutoRootContextLoader com) {
+
+        com.setContextHolder(ch);
+        com.setKpm(all.keyPairManager);
+        com.setRepositoryManager(all.repositoryManager);
+    }
+
+    private void wire(ContextHolder ch, All all, AutoAppContextLoader com) {
+
+        com.setContextHolder(ch);
+    }
+
+    private void wire(ContextHolder ch, All all, AutoUserContextLoader com) {
+
+        com.setContextHolder(ch);
+
+
+    }
+
+
     @Override
     public void customize(ContextHolder ch) {
-        final All all = new All();
+        final All all = new All(ch.getAndroid());
         create(ch, all);
         wire(ch, all);
     }

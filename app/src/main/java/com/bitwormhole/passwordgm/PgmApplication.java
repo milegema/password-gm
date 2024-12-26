@@ -12,7 +12,7 @@ import com.bitwormhole.passwordgm.contexts.RootContext;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PgmApplication extends Application implements PasswordGMApp, ContextCustomizer {
+public class PgmApplication extends Application implements PgmAppInterface, ContextCustomizer {
 
     private ContextHolder mContextHolder;
 

@@ -25,6 +25,7 @@ public class DataAccessRequest {
     private byte[] iv;
     private PaddingMode padding;
     private CipherMode mode;
+    private boolean checksum; // 读取时检查对象的 hash
 
 
     private DataAccessBlock[] blocks;
@@ -119,5 +120,13 @@ public class DataAccessRequest {
 
     public void setDam(DataAccessMode dam) {
         this.dam = dam;
+    }
+
+    public boolean isChecksum() {
+        return checksum;
+    }
+
+    public void setChecksum(boolean checksum) {
+        this.checksum = checksum;
     }
 }

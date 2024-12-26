@@ -11,7 +11,6 @@ public class ContextFactory {
         child.setName(".password-gm");
         child.setComponents(null);
         child.setKeyPairManager(null);
-        child.setSecretKeyManager(null);
         return child;
     }
 

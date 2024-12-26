@@ -2,9 +2,14 @@ package com.bitwormhole.passwordgm.encoding.blocks;
 
 import com.bitwormhole.passwordgm.data.ids.BlockID;
 import com.bitwormhole.passwordgm.encoding.ptable.PropertyTable;
+import com.bitwormhole.passwordgm.errors.PGMException;
 import com.bitwormhole.passwordgm.utils.ByteSlice;
+import com.bitwormhole.passwordgm.utils.HashUtils;
+import com.bitwormhole.passwordgm.utils.Logs;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class PlainBlock {
 
@@ -46,6 +51,31 @@ public class PlainBlock {
     public PlainBlock decode(PlainBlockOptions opt) {
         return PlainBlockCodec.decode(this, opt);
     }
+
+
+    public final boolean check() {
+        try {
+            final int len = content.getLength();
+            final String head = String.valueOf(this.type) + ' ' + len + '\0';
+            final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            buffer.write(head.getBytes(StandardCharsets.UTF_8));
+            buffer.write(content.getData(), content.getOffset(), content.getLength());
+            final byte[] sum = HashUtils.sum(buffer.toByteArray(), HashUtils.SHA256);
+            final BlockID have = new BlockID(sum);
+            final BlockID want = this.id;
+            return have.equals(want);
+        } catch (Exception e) {
+            Logs.warn(e.getMessage());
+            return false;
+        }
+    }
+
+    public final void verify() {
+        if (!this.check()) {
+            throw new PGMException("bad sum of PlainBlock");
+        }
+    }
+
 
     public PropertyTable getMeta() {
         return meta;
