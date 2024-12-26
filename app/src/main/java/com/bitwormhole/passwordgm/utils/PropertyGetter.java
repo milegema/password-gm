@@ -72,6 +72,26 @@ public class PropertyGetter {
         return def;
     }
 
+    public boolean getBoolean(String name, boolean def) {
+        String str = innerGet(name);
+        if (str == null) {
+            return def;
+        }
+        str = str.toLowerCase();
+        switch (str) {
+            case "true":
+            case "yes":
+            case "1":
+            case "t":
+            case "y":
+                return true;
+            default:
+                break;
+        }
+        return def;
+    }
+
+
     public long getLong(String name, long def) {
         String str = innerGet(name);
         try {

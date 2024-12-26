@@ -12,7 +12,8 @@ public class ContextBase {
     private final ContextBase parent;
     private final ContextScope scope;
     private Path folder;
-    //  private CryptFileIO fileIO;
+
+
     private String name; // app|user|domain|account|version
     private String alias; // file-name|dir-name|key-name
     private String label;

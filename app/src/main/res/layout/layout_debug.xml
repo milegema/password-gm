@@ -3,11 +3,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".DebugActivity">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="debug" />
+        android:background="#E91E63"
+        android:padding="10dp"
+        android:text="PasswordGM: developer mode"
+        android:textSize="20sp" />
+
+
+    <Button
+        android:id="@+id/button_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="login" />
+
+    <Button
+        android:id="@+id/button_unlock"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="unlock" />
+
 
 </LinearLayout>

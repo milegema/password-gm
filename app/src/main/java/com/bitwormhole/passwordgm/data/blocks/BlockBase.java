@@ -5,19 +5,22 @@ import com.bitwormhole.passwordgm.data.repositories.refs.RefName;
 import com.bitwormhole.passwordgm.encoding.blocks.BlockType;
 import com.bitwormhole.passwordgm.encoding.ptable.PropertyTable;
 
-public class BlockBase {
+public abstract class BlockBase {
 
     private BlockType type;
     private String name;
     private RefName ref;
     private long createdAt;
     private PropertyTable properties;
-    private BlockID parent;
+
     private byte[] salt;
 
     public BlockBase(BlockType t) {
         this.type = t;
     }
+
+    public abstract BlockID getParentBlockID();
+
 
     public RefName getRef() {
         return ref;
@@ -57,14 +60,6 @@ public class BlockBase {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public BlockID getParent() {
-        return parent;
-    }
-
-    public void setParent(BlockID parent) {
-        this.parent = parent;
     }
 
     public long getCreatedAt() {

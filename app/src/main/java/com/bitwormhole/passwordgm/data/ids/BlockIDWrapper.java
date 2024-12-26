@@ -15,6 +15,13 @@ public class BlockIDWrapper {
         return this.id;
     }
 
+    public static BlockID toBlockID(BlockIDWrapper src) {
+        if (src == null) {
+            return null;
+        }
+        return src.id;
+    }
+
     @Override
     public boolean equals(@Nullable Object other) {
         if (other == null) {

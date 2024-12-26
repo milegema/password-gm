@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import com.bitwormhole.passwordgm.boot.Bootstrap;
+import com.bitwormhole.passwordgm.contexts.AppContext;
 import com.bitwormhole.passwordgm.contexts.ContextHolder;
 import com.bitwormhole.passwordgm.contexts.UserContext;
 import com.bitwormhole.passwordgm.tasks.Promise;
@@ -88,6 +89,16 @@ public class MainActivity extends PgmActivity {
         }
     }
 
+    private boolean isDeveloperMode(ContextHolder ch) {
+        if (ch == null) {
+            return false;
+        }
+        AppContext app = ch.getApp();
+        if (app == null) {
+            return false;
+        }
+        return app.isDeveloperMode();
+    }
 
     private boolean isUserContextReady(ContextHolder ch) {
         if (ch == null) {
@@ -105,10 +116,17 @@ public class MainActivity extends PgmActivity {
     }
 
     private void handleContextHolder(ContextHolder ch) {
+
+        if (isDeveloperMode(ch)) {
+            this.startActivity(DebugActivity.class);
+            return;
+        }
+
         if (isUserContextReady(ch)) {
             this.startActivity(UnlockActivity.class);
             return;
         }
+
         this.startActivity(LoginActivity.class);
     }
 

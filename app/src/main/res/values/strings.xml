@@ -1,3 +1,10 @@
 <resources>
+
     <string name="app_name">密了个码</string>
+
+    <string name="input_email_address_here">请在此输入邮箱地址</string>
+    <string name="input_v_code_here">请在此输入验证码</string>
+    <string name="input_v2_code_here">请在此输入验证码</string>
+    <string name="send_v_code">发送验证码</string>
+
 </resources>

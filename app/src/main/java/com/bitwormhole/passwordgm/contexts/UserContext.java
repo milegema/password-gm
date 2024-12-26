@@ -9,14 +9,34 @@ public class UserContext extends ContextBase {
 
     private UserBlock block;
     private UserPIO user;
-
-
     private ConfigPDO config;
     private PropertyTable configProperties;
 
 
     public UserContext(AppContext _parent) {
         super(_parent, ContextScope.USER);
+    }
+
+    public static UserContext copy(UserContext src) {
+
+        AppContext parent = (AppContext) src.getParent();
+        UserContext dst = new UserContext(parent);
+
+        dst.setFolder(src.getFolder());
+        dst.setName(src.getName());
+        dst.setAlias(src.getAlias());
+        dst.setLabel(src.getLabel());
+        dst.setDescription(src.getDescription());
+        dst.setSecretKey(src.getSecretKey());
+        dst.setKeyPair(src.getKeyPair());
+        dst.setRepository(src.getRepository());
+
+        dst.block = src.block;
+        dst.config = src.config;
+        dst.configProperties = src.configProperties;
+        dst.user = src.user;
+
+        return dst;
     }
 
 

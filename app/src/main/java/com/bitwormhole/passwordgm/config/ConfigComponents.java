@@ -13,6 +13,8 @@ import com.bitwormhole.passwordgm.contexts.ContextAgent;
 import com.bitwormhole.passwordgm.contexts.ContextCustomizer;
 import com.bitwormhole.passwordgm.contexts.ContextHolder;
 import com.bitwormhole.passwordgm.data.repositories.RepositoryManager;
+import com.bitwormhole.passwordgm.network.web.WebClient;
+import com.bitwormhole.passwordgm.network.web.WebClientFacade;
 import com.bitwormhole.passwordgm.security.KeyPairManager;
 import com.bitwormhole.passwordgm.security.KeyPairManagerImpl;
 import com.bitwormhole.passwordgm.security.SecretKeyManager;
@@ -33,6 +35,7 @@ public class ConfigComponents implements ContextCustomizer {
         AutoAppContextLoader appContextLoader;
         AutoUserContextLoader userContextLoader;
         ComContextAgent contextAgent;
+        WebClientFacade webClient;
 
 
         public All(Context ctx) {
@@ -43,6 +46,8 @@ public class ConfigComponents implements ContextCustomizer {
             this.rootContextLoader = new AutoRootContextLoader();
             this.appContextLoader = new AutoAppContextLoader();
             this.userContextLoader = new AutoUserContextLoader();
+
+            this.webClient = new WebClientFacade();
         }
     }
 
@@ -54,6 +59,7 @@ public class ConfigComponents implements ContextCustomizer {
         builder.addComponent(all.contextAgent).addAlias(ContextAgent.class);
         builder.addComponent(all.keyPairManager).addAlias(KeyPairManager.class);
         builder.addComponent(all.repositoryManager).addAlias(RepositoryManager.class);
+        builder.addComponent(all.webClient).addAlias(WebClient.class);
 
         builder.addComponent(all.rootContextLoader);
         builder.addComponent(all.appContextLoader);

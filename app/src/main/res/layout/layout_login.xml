@@ -18,4 +18,33 @@
         android:text="登录"
         android:textSize="50sp" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="E-mail 地址:" />
+
+    <EditText
+        android:id="@+id/edit_text_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/input_email_address_here" />
+
+    <Button
+        android:id="@+id/button_next_step"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="next" />
+
+
+    <com.bitwormhole.passwordgm.ui.elements.VerificationCodeBox
+        android:id="@+id/input_v_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/button_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="login" />
+
 </LinearLayout>

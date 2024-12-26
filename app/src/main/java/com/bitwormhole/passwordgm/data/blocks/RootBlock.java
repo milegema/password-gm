@@ -1,5 +1,6 @@
 package com.bitwormhole.passwordgm.data.blocks;
 
+import com.bitwormhole.passwordgm.data.ids.BlockID;
 import com.bitwormhole.passwordgm.data.ids.RootBlockID;
 import com.bitwormhole.passwordgm.encoding.blocks.BlockType;
 
@@ -18,5 +19,10 @@ public class RootBlock extends BlockBase {
 
     public void setId(RootBlockID id) {
         this.id = id;
+    }
+
+    @Override
+    public BlockID getParentBlockID() {
+        return null;
     }
 }

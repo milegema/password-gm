@@ -3,6 +3,7 @@ package com.bitwormhole.passwordgm.contexts;
 import com.bitwormhole.passwordgm.components.ComponentManager;
 import com.bitwormhole.passwordgm.data.blocks.AccountBlock;
 import com.bitwormhole.passwordgm.data.blocks.AppBlock;
+import com.bitwormhole.passwordgm.network.web.WebClient;
 import com.bitwormhole.passwordgm.security.KeyPairManager;
 import com.bitwormhole.passwordgm.security.SecretKeyManager;
 import com.bitwormhole.passwordgm.utils.Attributes;
@@ -14,16 +15,16 @@ public class AppContext extends ContextBase {
     private ComponentManager components;
     private Properties properties;
     private Attributes attributes;
-
     private KeyPairManager keyPairManager;
-
     private AppBlock block;
+    private WebClient webClient;
 
 
     private boolean started;
     private boolean starting;
     private boolean stopped;
     private boolean stopping;
+    private boolean developerMode;
 
 
     public AppContext(RootContext _parent) {
@@ -89,6 +90,14 @@ public class AppContext extends ContextBase {
         this.stopping = stopping;
     }
 
+    public boolean isDeveloperMode() {
+        return developerMode;
+    }
+
+    public void setDeveloperMode(boolean developerMode) {
+        this.developerMode = developerMode;
+    }
+
     public Attributes getAttributes() {
         return attributes;
     }
@@ -104,5 +113,13 @@ public class AppContext extends ContextBase {
 
     public void setProperties(Properties properties) {
         this.properties = properties;
+    }
+
+    public WebClient getWebClient() {
+        return webClient;
+    }
+
+    public void setWebClient(WebClient webClient) {
+        this.webClient = webClient;
     }
 }

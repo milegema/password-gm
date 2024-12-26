@@ -2,14 +2,22 @@ package com.bitwormhole.passwordgm.encoding.blocks;
 
 public enum BlockType {
 
+    ////////////////////////////////
+    // base
+
     BLOB,
+    Properties,
+    Table,
+    FooBar,
+
+    ////////////////////////////////
+    // keys
 
     SecretKey,
     KeyPair,
 
-    Properties,
-    Table,
-
+    ////////////////////////////////
+    // blocks
 
     Root,
     App,
@@ -18,7 +26,4 @@ public enum BlockType {
     Account,
     Scene,
     Passcode,
-
-    FooBar,
-
 }
