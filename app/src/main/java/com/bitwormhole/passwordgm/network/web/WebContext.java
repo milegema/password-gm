@@ -6,6 +6,7 @@ public class WebContext {
     private WebClient client;
     private WebClientFactory factory;
     private WebConfiguration configuration;
+    private WebFilterChain chain;
 
     public WebContext() {
     }
@@ -32,6 +33,14 @@ public class WebContext {
 
     public void setConfiguration(WebConfiguration configuration) {
         this.configuration = configuration;
+    }
+
+    public WebFilterChain getChain() {
+        return chain;
+    }
+
+    public void setChain(WebFilterChain chain) {
+        this.chain = chain;
     }
 
     public String getBaseURL() {

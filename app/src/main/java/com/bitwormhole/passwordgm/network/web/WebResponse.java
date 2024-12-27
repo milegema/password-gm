@@ -1,11 +1,14 @@
 package com.bitwormhole.passwordgm.network.web;
 
+import java.net.URL;
+
 public final class WebResponse {
 
     private final WebStatus status;
     private final WebHeaderFields header;
     private WebRequest request;
     private WebEntity entity;
+    private URL location;
 
     public WebResponse() {
         this.status = new WebStatus();
@@ -28,6 +31,14 @@ public final class WebResponse {
 
     public void setRequest(WebRequest request) {
         this.request = request;
+    }
+
+    public URL getLocation() {
+        return location;
+    }
+
+    public void setLocation(URL location) {
+        this.location = location;
     }
 
     public WebEntity getEntity() {

@@ -2,6 +2,7 @@ package com.bitwormhole.passwordgm.network.web;
 
 public final class WebRequest {
 
+    private WebContext context;
     private WebMethod method;
     private String url;
     private final WebHeaderFields header;
@@ -46,6 +47,14 @@ public final class WebRequest {
 
     public void setEntity(WebEntity entity) {
         this.entity = entity;
+    }
+
+    public WebContext getContext() {
+        return context;
+    }
+
+    public void setContext(WebContext context) {
+        this.context = context;
     }
 
     public WebHeaderFields getHeader() {
